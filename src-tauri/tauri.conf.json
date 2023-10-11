@@ -39,8 +39,13 @@
         "resizable": true,
         "title": "director",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "label": "main"
       }
-    ]
+    ],
+    "systemTray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
+    }
   }
 }
