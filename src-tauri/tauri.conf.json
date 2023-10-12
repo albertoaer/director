@@ -45,7 +45,9 @@
         "resizable": true,
         "title": "director",
         "width": 800,
+        "minWidth": 600,
         "height": 600,
+        "minHeight": 400,
         "label": "main",
         "decorations": false,
         "center": true
