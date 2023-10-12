@@ -16,6 +16,12 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "window": {
+        "all": true
+      },
+      "globalShortcut": {
+        "all": true
       }
     },
     "bundle": {
@@ -40,7 +46,9 @@
         "title": "director",
         "width": 800,
         "height": 600,
-        "label": "main"
+        "label": "main",
+        "decorations": false,
+        "center": true
       }
     ],
     "systemTray": {

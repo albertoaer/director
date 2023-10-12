@@ -25,6 +25,11 @@ fn main() {
               }
               _ => {}
         })
+        .setup(|app| {
+            #[cfg(debug_assertions)]
+            app.get_window("main").unwrap().open_devtools();
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")
