@@ -5,6 +5,7 @@ use tauri::{SystemTray, SystemTrayEvent, Manager, SystemTrayMenu, CustomMenuItem
 
 mod handlers;
 mod state;
+mod fsop;
 
 fn main() {
   let menu = SystemTrayMenu::new().add_item(CustomMenuItem::new("exit", "Exit"));
@@ -27,11 +28,6 @@ fn main() {
         api.prevent_close();
       }
       _ => {}
-    })
-    .setup(|app| {
-      #[cfg(debug_assertions)]
-      app.get_window("main").unwrap().open_devtools();
-      Ok(())
     })
     .manage(state::AppState::new())
     .invoke_handler(tauri::generate_handler![handlers::request_directory])

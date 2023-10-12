@@ -1,12 +1,13 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
+  import { routeToString, type Route } from "./model";
 
   const dispatch = createEventDispatcher<{ navigate: {route: string} }>();
 
-  export let route: { name: string, path: string }[];
+  export let route: Route;
 
   let value = '';
-  $: value = '/' + route.map(x => x.name).join('/');
+  $: value = routeToString(route);
   
   let editValue = '';
 
@@ -41,8 +42,10 @@
   </form>
   {:else}
     <button on:click={_ => editMode = true}>
-      {#each route as item}
-        /
+      {#each route.items as item, i}
+        {#if !route.prefixed || i > 0}  
+          /
+        {/if}
         <button class="sub" on:click|stopPropagation={event => handleItemClick(event, item.path)}>
           {item.name}
         </button>
