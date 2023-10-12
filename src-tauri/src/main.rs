@@ -4,37 +4,37 @@
 use tauri::{SystemTray, SystemTrayEvent, Manager, SystemTrayMenu, CustomMenuItem};
 
 fn main() {
-    let menu = SystemTrayMenu::new().add_item(CustomMenuItem::new("exit", "Exit"));
+  let menu = SystemTrayMenu::new().add_item(CustomMenuItem::new("exit", "Exit"));
 
-    tauri::Builder::default()
-        .system_tray(SystemTray::new().with_menu(menu))
-        .on_system_tray_event(|app, event| match event {
-            SystemTrayEvent::LeftClick { .. } => {
-                let window = app.get_window("main").unwrap();
-                window.show().unwrap();
-            },
-            SystemTrayEvent::MenuItemClick { id, .. } if id == "exit" => {
-                std::process::exit(0);
-            }
-            _ => {}
-        })
-        .on_window_event(|event| match event.event() {
-            tauri::WindowEvent::CloseRequested { api, .. } => {
-                event.window().hide().unwrap();
-                api.prevent_close();
-              }
-              _ => {}
-        })
-        .setup(|app| {
-            #[cfg(debug_assertions)]
-            app.get_window("main").unwrap().open_devtools();
-            Ok(())
-        })
-        .invoke_handler(tauri::generate_handler![])
-        .build(tauri::generate_context!())
-        .expect("error while building tauri application")
-        .run(|_app, event| match event {
-            tauri::RunEvent::ExitRequested { api, .. } => { api.prevent_exit(); },
-            _ => {}
-        })
+  tauri::Builder::default()
+    .system_tray(SystemTray::new().with_menu(menu))
+    .on_system_tray_event(|app, event| match event {
+      SystemTrayEvent::LeftClick { .. } => {
+        let window = app.get_window("main").unwrap();
+        window.show().unwrap();
+      },
+      SystemTrayEvent::MenuItemClick { id, .. } if id == "exit" => {
+        std::process::exit(0);
+      }
+      _ => {}
+    })
+    .on_window_event(|event| match event.event() {
+      tauri::WindowEvent::CloseRequested { api, .. } => {
+        event.window().hide().unwrap();
+        api.prevent_close();
+      }
+      _ => {}
+    })
+    .setup(|app| {
+      #[cfg(debug_assertions)]
+      app.get_window("main").unwrap().open_devtools();
+      Ok(())
+    })
+    .invoke_handler(tauri::generate_handler![])
+    .build(tauri::generate_context!())
+    .expect("error while building tauri application")
+    .run(|_app, event| match event {
+      tauri::RunEvent::ExitRequested { api, .. } => { api.prevent_exit(); },
+      _ => {}
+    })
 }
