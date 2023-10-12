@@ -3,6 +3,9 @@
 
 use tauri::{SystemTray, SystemTrayEvent, Manager, SystemTrayMenu, CustomMenuItem};
 
+mod handlers;
+mod state;
+
 fn main() {
   let menu = SystemTrayMenu::new().add_item(CustomMenuItem::new("exit", "Exit"));
 
@@ -30,7 +33,8 @@ fn main() {
       app.get_window("main").unwrap().open_devtools();
       Ok(())
     })
-    .invoke_handler(tauri::generate_handler![])
+    .manage(state::AppState::new())
+    .invoke_handler(tauri::generate_handler![handlers::request_directory])
     .build(tauri::generate_context!())
     .expect("error while building tauri application")
     .run(|_app, event| match event {

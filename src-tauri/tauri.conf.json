@@ -56,6 +56,15 @@
     "systemTray": {
       "iconPath": "icons/icon.png",
       "iconAsTemplate": true
+    },
+    "cli": {
+      "args": [
+        {
+          "name": "route",
+          "index": 1,
+          "takesValue": true
+        }
+      ]
     }
   }
 }
