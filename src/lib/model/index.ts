@@ -5,15 +5,24 @@ export interface RouteItem {
 
 export interface Route {
   items: RouteItem[],
-  fullName: string,
+  path: string,
   prefixed: boolean
-}
-
-export interface FileItem extends RouteItem {
-  size?: number
 }
 
 export function routeToString(route: Route) {
   let line = route.items.map(x => x.name).join('/');
   return route.prefixed ? line : '/' + line;
+}
+
+export interface FSChild {
+  name: string,
+  path: string,
+  size: number | null
+}
+
+export interface FSEvent {
+  entry?: {
+    path: string,
+    data: FSChild[]
+  }
 }

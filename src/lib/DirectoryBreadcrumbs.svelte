@@ -14,13 +14,15 @@
   let editMode = false;
   let timeout: NodeJS.Timeout | undefined;
 
+  const DOUBLE_CLICK_TIMEOUT = 250;
+
   function handleItemClick(event: MouseEvent, route: string) {
     if (event.detail == 1) {
-      timeout = setTimeout(() => submit(route), 200);
+      timeout = setTimeout(() => submit(route), DOUBLE_CLICK_TIMEOUT);
     }
     if (event.detail == 2) {
       editMode = true;
-      clearTimeout(timeout)
+      clearTimeout(timeout);
     }
   }
 

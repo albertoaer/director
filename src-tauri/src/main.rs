@@ -6,6 +6,7 @@ use tauri::{SystemTray, SystemTrayEvent, Manager, SystemTrayMenu, CustomMenuItem
 mod handlers;
 mod state;
 mod fsop;
+mod ds;
 
 fn main() {
   let menu = SystemTrayMenu::new().add_item(CustomMenuItem::new("exit", "Exit"));

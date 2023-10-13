@@ -2,17 +2,18 @@
   import { getMatches } from "@tauri-apps/api/cli";
   import { invoke } from "@tauri-apps/api/tauri";
   import { listen } from "@tauri-apps/api/event";
-  import DirectoryRoute from "./DirectoryRoute.svelte";
+  import DirectoryBreadcrumbs from "./DirectoryBreadcrumbs.svelte";
   import FileRow from "./FileRow.svelte";
   import FileTable from "./FileTable.svelte";
-  import type { Route, FileItem } from "./model";
+  import type { FSChild, FSEvent, Route } from "./model";
 
   let route: Route | undefined;
 
-  let items: FileItem[] | undefined;
-  listen<FileItem[]>("file-data", (event) => {
-    console.log(event.payload);
-    items = event.payload;
+  let items: FSChild[] | undefined;
+  listen<FSEvent>("updated-entry", (event) => {
+    if (event.payload.entry?.path == route?.path && route?.path) {
+      items = event.payload.entry?.data;
+    }
   });
   
   async function navigate(value: string | null | boolean | string[]) {
@@ -26,13 +27,13 @@
 </script>
 
 {#if route}
-  <DirectoryRoute {route} on:navigate={event => navigate(event.detail.route)}/>
+  <DirectoryBreadcrumbs {route} on:navigate={event => navigate(event.detail.route)}/>
 {/if}
 <div id="files">
   <FileTable>
     {#if items}
       {#each items as item (item.path)}
-        <FileRow name={item.name} path={item.path} />
+        <FileRow name={item.name} path={item.path} on:navigate={event => navigate(event.detail.route)} />
       {/each}
     {/if}
   </FileTable>

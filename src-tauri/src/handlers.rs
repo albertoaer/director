@@ -1,4 +1,4 @@
-use crate::{state, fsop};
+use crate::state;
 
 use std::{path, env, ffi};
 
@@ -11,8 +11,7 @@ pub struct RouteItem {
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Route {
   items: Vec<RouteItem>,
-  #[serde(rename = "fullName")]
-  full_name: String,
+  path: String,
   prefixed: bool
 }
 
@@ -25,12 +24,6 @@ fn obtain_name(path: &path::Path) -> Option<&ffi::OsStr> {
     return Some(prefix.as_os_str())
   }
   return None
-}
-
-impl fsop::FSListenner for tauri::Window {
-  fn on_entry_update(&self, _: &fsop::EntryId, data: &Vec<fsop::FSChild>) {
-    self.emit("file-data", data).unwrap();
-  }
 }
 
 #[tauri::command]
@@ -52,9 +45,9 @@ pub fn request_directory(
   
   let path_name = path.to_str().unwrap().into();
   let manager = state.inner().fs_manager();
-  manager.listen(&path_name, window);
   manager.process_entry(&path_name).map_err(|err| err.to_string())?;
+  state.associate_folder(window, path_name.clone());
 
   let prefixed = path.components().next().and_then(|x| Some(matches!(x, path::Component::Prefix(_)))).unwrap_or(false);
-  return Ok(Route { items: components.into_iter().rev().collect(), full_name: path_name, prefixed: prefixed });
+  return Ok(Route { items: components.into_iter().rev().collect(), path: path_name, prefixed: prefixed });
 }
