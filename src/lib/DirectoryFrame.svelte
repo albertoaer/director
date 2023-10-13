@@ -2,23 +2,33 @@
   import { getMatches } from "@tauri-apps/api/cli";
   import { invoke } from "@tauri-apps/api/tauri";
   import { listen } from "@tauri-apps/api/event";
-  import DirectoryBreadcrumbs from "./DirectoryBreadcrumbs.svelte";
-  import FileRow from "./FileRow.svelte";
-  import FileTable from "./FileTable.svelte";
-  import type { FSChild, FSEvent, Route } from "./model";
+  import type { FSEvent, Route } from "./model";
+  import { DirectoryContext } from "./directory_context";
+
+  let context = DirectoryContext.getOrSet();
+  context.setNavigate(navigate);
 
   let route: Route | undefined;
-
-  let items: FSChild[] | undefined;
   listen<FSEvent>("updated-entry", (event) => {
     if (event.payload.entry?.path == route?.path && route?.path) {
-      items = event.payload.entry?.data;
+      context.pushChilds(event.payload.entry?.data);
     }
   });
   
+  async function navigateCore(directory: string) {
+    route = await invoke<Route>('request_directory', { directory });
+    context.pushRoute(route);
+  }
+
   async function navigate(value: string | null | boolean | string[]) {
-    items = undefined;
-    route = await invoke<Route>('request_directory', { directory: value ? value.toString() : "" });
+    await navigateCore(value ? value.toString() : "");
+    // at this point the route is ensured
+    history.pushState({route}, '', '');
+  }
+
+  function handlePopState(event: PopStateEvent) {
+    if (event.state?.route?.path)
+      navigateCore(event.state.route.path);
   }
 
   getMatches().then(async matches => {
@@ -26,21 +36,8 @@
   });
 </script>
 
-{#if route}
-  <DirectoryBreadcrumbs {route} on:navigate={event => navigate(event.detail.route)}/>
-{/if}
-<div id="files">
-  <FileTable>
-    {#if items}
-      {#each items as item (item.path)}
-        <FileRow name={item.name} path={item.path} on:navigate={event => navigate(event.detail.route)} />
-      {/each}
-    {/if}
-  </FileTable>
-</div>
+<svelte:window on:popstate={handlePopState} ></svelte:window>
 
-<style>
-  #files {
-    display: grid;
-  }
-</style>
+{#if route}
+  <slot></slot>
+{/if}

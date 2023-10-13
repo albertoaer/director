@@ -37,44 +37,53 @@
   }
 </script>
 
-<div>
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<div id="bar" on:click={_ => editMode = true}>
   {#if editMode}
-  <form on:submit|preventDefault={_ => submit(editValue)}>
-    <input use:setupInput bind:value={editValue} type="text" on:blur={_ => editMode = false}>
-  </form>
+    <form on:submit|preventDefault={_ => submit(editValue)}>
+      <input use:setupInput bind:value={editValue} type="text" on:blur={_ => editMode = false}>
+    </form>
   {:else}
-    <button on:click={_ => editMode = true}>
+    <div>
       {#each route.items as item, i}
-        {#if !route.prefixed || i > 0}  
-          /
-        {/if}
-        <button class="sub" on:click|stopPropagation={event => handleItemClick(event, item.path)}>
+        <button on:click|stopPropagation={event => handleItemClick(event, item.path)}>
           {item.name}
         </button>
       {/each}
-  </button>
+    </div>
   {/if}
 </div>
 
 <style>
+  #bar {
+    font-size: 1.2em;
+  }
+
   input {
+    margin: 0;
+    padding: 0;
     border: none;
-    outline: 1px solid black;
+    outline: 0;
     display: inline-flex;
     width: 100%;
+    height: 100%;
+    font-size: inherit;
   }
 
   button {
     margin: 0;
-    padding: 0;
+    padding: 0 0.5em;
     border: none;
-    background-color: transparent;
-    display: inline-flex;
+    background-color: rgb(200, 200, 200);
+    height: 100%;
+    font-size: inherit;
   }
   
-  button.sub:hover {
+  button:hover {
     cursor: pointer;
-    background-color: aquamarine;
+    background-color: rgb(168, 168, 168);
     transition: 200ms all ease;
+    font-size: inherit;
   }
 </style>

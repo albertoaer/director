@@ -20,11 +20,6 @@
 </header>
 
 <style>
-  h2 {
-    margin: 0;
-    padding: 0.2em;
-  }
-
   header {
     background-color: rgb(160, 160, 209);
     border: 0;
@@ -32,6 +27,16 @@
     display: flex;
     align-items: stretch;
     justify-content: space-between;
+    position: sticky;
+    top: 0;
+    height: 30px;
+  }
+
+  h2 {
+    margin: 0;
+    padding: 5px;
+    font-size: 16px;
+    height: 100%;
   }
 
   #actions {
