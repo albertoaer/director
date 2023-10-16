@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use tauri::{SystemTray, SystemTrayEvent, Manager, SystemTrayMenu, CustomMenuItem};
+use window_shadows::set_shadow;
 
 mod handlers;
 mod state;
@@ -32,6 +33,14 @@ fn main() {
     })
     .manage(state::AppState::new())
     .invoke_handler(tauri::generate_handler![handlers::request_directory])
+    .setup(|app| {
+      #[cfg(any(windows, target_os = "macos"))]
+      {
+        let window = app.get_window("main").unwrap();
+        set_shadow(&window, true).unwrap();
+      }
+      Ok(())
+    })
     .build(tauri::generate_context!())
     .expect("error while building tauri application")
     .run(|_app, event| match event {
