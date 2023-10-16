@@ -10,11 +10,11 @@
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <header on:mousedown={() => appWindow.startDragging()}>
-  <h2>
+  <p>
     {#await getName() then name}
       {name}
     {/await}
-  </h2>
+  </p>
   <div id="actions">
     <!-- svelte-ignore a11y-missing-attribute -->
     <button on:mousedown|stopPropagation on:click={() => appWindow.minimize()}><Icon icon={minimizeIcon} /></button>
@@ -33,10 +33,10 @@
     justify-content: space-between;
     position: sticky;
     top: 0;
-    height: 30px;
+    height: 27px;
   }
 
-  h2 {
+  p {
     margin: 0;
     padding: 5px;
     font-size: 16px;
