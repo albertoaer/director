@@ -1,7 +1,11 @@
 <script lang="ts">
   import { getName } from '@tauri-apps/api/app';
   import { appWindow } from '@tauri-apps/api/window';
-  import Icon from './Icon.svelte';
+  import Icon from '@iconify/svelte';
+
+  import minimizeIcon from '@iconify/icons-mdi/window-minimize';
+  import maximizeIcon from '@iconify/icons-mdi/window-maximize';
+  import closeIcon from '@iconify/icons-mdi/window-close';
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -13,9 +17,9 @@
   </h2>
   <div id="actions">
     <!-- svelte-ignore a11y-missing-attribute -->
-    <button on:mousedown|stopPropagation on:click={() => appWindow.minimize()}><Icon id="mdi:window-minimize" /></button>
-    <button on:mousedown|stopPropagation on:click={() => appWindow.toggleMaximize()}><Icon id="mdi:window-maximize" /></button>
-    <button on:mousedown|stopPropagation on:click={() => appWindow.hide()}><Icon id="mdi:window-close" /></button>
+    <button on:mousedown|stopPropagation on:click={() => appWindow.minimize()}><Icon icon={minimizeIcon} /></button>
+    <button on:mousedown|stopPropagation on:click={() => appWindow.toggleMaximize()}><Icon icon={maximizeIcon} /></button>
+    <button on:mousedown|stopPropagation on:click={() => appWindow.hide()}><Icon icon={closeIcon} /></button>
   </div>
 </header>
 
