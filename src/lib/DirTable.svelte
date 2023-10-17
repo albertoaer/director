@@ -1,7 +1,27 @@
-<table>
-  <tr>
+<script lang="ts">
+  const maxFontSize = 1.8;
+  const minFontSize = 0.6;
+
+  let fontSize = (maxFontSize + minFontSize) / 2;
+
+  function updateFontSize(value: number, allow: boolean) {
+    if (value == 0 || !allow) return;
+    const mov = value / -Math.abs(value);
+    fontSize = Math.min(Math.max(minFontSize, fontSize + (mov * 0.2)), maxFontSize);
+    console.log(fontSize);
+  }
+</script>
+
+<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+<table
+  on:wheel={ev => updateFontSize(ev.deltaY, ev.ctrlKey)}
+  style="--font-size: {fontSize}em"
+>
+  <tr id="header">
     <th>Name</th>
     <th>Size</th>
+    <th>Modified</th>
+    <th>Created</th>
   </tr>
   <slot />
 </table>
@@ -12,5 +32,17 @@
     text-align: left;
     border-spacing: 0px;
     border-collapse: collapse;
+    table-layout: fixed;
+    font-size: var(--font-size);
+  }
+
+  #header {
+    position: sticky;
+    background-color: var(--background-color);
+    top: 0;
+  }
+
+  #header > * {
+    padding: 0.3em 0;
   }
 </style>

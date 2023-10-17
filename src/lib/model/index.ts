@@ -17,7 +17,16 @@ export function routeToString(route: Route) {
 export interface FSChild {
   name: string,
   path: string,
-  size: number | null
+  size: {
+    status: 'NotCalculated' | 'Calculating',
+    value: undefined
+  } | {
+    status: 'Known' | 'Calculated',
+    value: number
+  },
+  modified: number | null,
+  created: number | null,
+  type: 'file' | 'directory' | 'link' | 'other'
 }
 
 export interface FSEvent {

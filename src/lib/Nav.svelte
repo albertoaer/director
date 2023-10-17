@@ -4,7 +4,7 @@
 
   export let items: ComponentProps<NavBar>['items'];
   
-  let component: ComponentType | undefined = undefined;
+  let component: ComponentType | undefined = items[0]?.component;
 </script>
 
 <div id="main">

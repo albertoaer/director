@@ -1,16 +1,16 @@
 <script lang="ts">
-  import FileRow from "./FileRow.svelte";
-  import FileTable from "./FileTable.svelte";
+  import DirRow from "./DirRow.svelte";
+  import DirTable from "./DirTable.svelte";
   import { DirectoryContext } from "./directory_context";
 
   const context = DirectoryContext.getOrSet();
   const childs$ = context.childs$;
 </script>
 
-<FileTable>
+<DirTable>
   {#if $childs$}
     {#each $childs$ as child (child.path)}
-      <FileRow name={child.name} path={child.path} on:navigate={event => context.navigate(event.detail.route)} />
+      <DirRow {child} on:navigate={event => context.navigate(event.detail.route)} />
     {/each}
   {/if}
-</FileTable>
+</DirTable>
