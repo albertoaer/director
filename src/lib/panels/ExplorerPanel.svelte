@@ -10,6 +10,7 @@
 
 <style>
   #content {
+    margin-top: 0.5em;
     height: 92%;
     width: 100%;
     overflow-y: auto;

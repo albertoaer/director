@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { routeToString, type Route } from "./model";
+  import { fade } from "svelte/transition";
 
   const dispatch = createEventDispatcher<{ navigate: {route: string} }>();
 
@@ -41,12 +42,12 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div id="bar" on:click={_ => editMode = true}>
   {#if editMode}
-    <form on:submit|preventDefault={_ => submit(editValue)}>
+    <form in:fade={{ duration: 200 }} on:submit|preventDefault={_ => submit(editValue)}>
       <input use:setupInput bind:value={editValue} type="text" on:blur={_ => editMode = false}>
     </form>
   {:else}
-    <div>
-      {#each route.items as item, i}
+    <div in:fade={{ duration: 200 }}>
+      {#each route.items as item}
         <button on:click|stopPropagation={event => handleItemClick(event, item.path)}>
           {item.name}
         </button>
@@ -58,13 +59,17 @@
 <style>
   #bar {
     font-size: 1.2em;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: rgb(200, 200, 200);
   }
 
   input {
     margin: 0;
-    padding: 0;
+    padding: 0.25em;
     border: none;
     outline: 0;
+    background-color: inherit;
     display: inline-flex;
     width: 100%;
     height: 100%;
@@ -73,9 +78,9 @@
 
   button {
     margin: 0;
-    padding: 0 0.5em;
+    padding: 0.25em 0.5em;
     border: none;
-    background-color: rgb(200, 200, 200);
+    background-color: inherit;
     height: 100%;
     font-size: inherit;
   }

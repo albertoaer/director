@@ -16,16 +16,21 @@
     {/await}
   </p>
   <div id="actions">
-    <!-- svelte-ignore a11y-missing-attribute -->
-    <button on:mousedown|stopPropagation on:click={() => appWindow.minimize()}><Icon icon={minimizeIcon} /></button>
-    <button on:mousedown|stopPropagation on:click={() => appWindow.toggleMaximize()}><Icon icon={maximizeIcon} /></button>
-    <button on:mousedown|stopPropagation on:click={() => appWindow.hide()}><Icon icon={closeIcon} /></button>
+    <button on:mousedown|stopPropagation on:click={() => appWindow.minimize()}>
+      <Icon icon={minimizeIcon} color="var(--font-color)" />
+    </button>
+    <button on:mousedown|stopPropagation on:click={() => appWindow.toggleMaximize()}>
+      <Icon icon={maximizeIcon} color="var(--font-color)" />
+    </button>
+    <button on:mousedown|stopPropagation on:click={() => appWindow.hide()}>
+      <Icon icon={closeIcon} color="var(--font-color)" />
+    </button>
   </div>
 </header>
 
 <style>
   header {
-    background-color: rgb(160, 160, 209);
+    background-color: var(--window-bar-color);
     border: 0;
     user-select: none;
     display: flex;
@@ -51,18 +56,18 @@
     border: none;
     margin: 0;
     padding: 0.5em 1em;
-    background-color: rgb(160, 160, 209);
+    background-color: inherit;
     transition: 100ms all ease;
   }
   
   button:hover {
-    background-color: rgb(170, 170, 170);
+    background-color: var(--button-hover);
     cursor: pointer;
     transition: 100ms all ease;
   }
   
   button:active {
-    background-color: rgb(134, 134, 134);
+    background-color: inherit;
     transition: 100ms all ease;
   }
 </style>

@@ -2,13 +2,16 @@
   import DirectoryFrame from "./lib/DirectoryFrame.svelte";
   import TitleBar from "./lib/TitleBar.svelte";
   import Nav from "./lib/Nav.svelte";
-  import ExplorerPanel from "./lib/panels/ExplorerPanel.svelte";
+  import { ExplorerPanel, VoidPanel } from "./lib/panels";
+  import Theme from "./lib/Theme.svelte";
 
   import exploreIcon from '@iconify/icons-mdi/folder-outline';
-  import alertsIcon from '@iconify/icons-mdi/alert-box-outline';
+  import alertsIcon from '@iconify/icons-mdi/alert-circle-outline';
   import settingsIcon from '@iconify/icons-mdi/settings-outline';
+  import cleanIcon from '@iconify/icons-mdi/recycle';
 </script>
 
+<Theme />
 <div id="app">
   <TitleBar />
   <DirectoryFrame>
@@ -20,12 +23,17 @@
       },
       {
         name: 'alerts',
-        component: ExplorerPanel,
+        component: VoidPanel,
         icon: alertsIcon
       },
       {
+        name: 'clean',
+        component: VoidPanel,
+        icon: cleanIcon,
+      },
+      {
         name: 'settings',
-        component: ExplorerPanel,
+        component: VoidPanel,
         icon: settingsIcon
       }
     ]} />
@@ -36,5 +44,7 @@
   #app {
     height: 100vh;
     overflow: hidden;
+    background-color: var(--background-color);
+    color: var(--font-color);
   }
 </style>

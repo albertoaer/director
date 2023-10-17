@@ -2,6 +2,7 @@
   import { getMatches } from "@tauri-apps/api/cli";
   import { invoke } from "@tauri-apps/api/tauri";
   import { listen } from "@tauri-apps/api/event";
+  import { message } from "@tauri-apps/api/dialog";
   import type { FSEvent, Route } from "./model";
   import { DirectoryContext } from "./directory_context";
 
@@ -16,8 +17,12 @@
   });
   
   async function navigateCore(directory: string) {
-    route = await invoke<Route>('request_directory', { directory });
-    context.pushRoute(route);
+    try {
+      route = await invoke<Route>('request_directory', { directory });
+      context.pushRoute(route);
+    } catch (err: any) {
+      message(err.toString(), { type: 'error' });
+    }
   }
 
   async function navigate(value: string | null | boolean | string[]) {

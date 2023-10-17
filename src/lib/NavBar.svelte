@@ -17,7 +17,7 @@
   {#each items as item (item.name)}
     <li class="item">
       <button on:click={_ => dispatch('selected', item)}>
-        <Icon icon={item.icon} />
+        <Icon icon={item.icon} color="var(--font-color)" />
       </button>
     </li>
   {/each}
@@ -25,13 +25,13 @@
 
 <style>
   #bar {
-    background-color: rgb(189, 189, 251);
+    background-color: var(--nav-bar-color);
     margin: 0;
     padding: 0;
   }
 
   button {
-    background-color: transparent;
+    background-color: inherit;
     border: none;
     padding: 0;
     cursor: pointer;
@@ -39,11 +39,11 @@
     display: flex;
     font-size: 2em;
     justify-content: center;
-    transition: 200ms transform ease;
+    transition: 200ms background-color ease;
   }
   
   li:hover button {
-    transform: scale(0.95);
-    transition: 150ms transform ease-out;
+    background-color: var(--button-hover);
+    transition: 200ms background-color ease-out;
   }
 </style>
