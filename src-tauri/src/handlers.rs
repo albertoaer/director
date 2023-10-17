@@ -43,10 +43,10 @@ pub fn request_directory(
     path: x.to_str().unwrap().into()
   }).filter(|x| !x.name.is_empty()).collect();
   
-  let path_name = path.to_str().unwrap().into();
+  let path_name: String = path.to_str().unwrap().into();
   let manager = state.inner().fs_manager();
-  manager.process_entry(&path_name).map_err(|err| err.to_string())?;
   state.associate_folder(window, path_name.clone());
+  manager.get_entry(&path_name).map_err(|err| err.to_string())?;
 
   let prefixed = path.components().next().and_then(|x| Some(matches!(x, path::Component::Prefix(_)))).unwrap_or(false);
   return Ok(Route { items: components.into_iter().rev().collect(), path: path_name, prefixed: prefixed });

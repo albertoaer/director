@@ -32,6 +32,6 @@ export interface FSChild {
 export interface FSEvent {
   entry?: {
     path: string,
-    data: FSChild[]
+    childs: FSChild[]
   }
 }

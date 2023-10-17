@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fs, collections::hash_map::DefaultHasher, hash::{Hash, Hasher}};
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum FSChildType {
@@ -38,13 +38,13 @@ pub enum FSSizeStatus {
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct FSChild {
-  name: String,
-  path: String,
-  size: FSSizeStatus,
-  modified: Option<u128>,
-  created: Option<u128>,
+  pub(super) name: String,
+  pub(super) path: String,
+  pub(super) size: FSSizeStatus,
+  pub(super) modified: Option<u128>,
+  pub(super) created: Option<u128>,
   #[serde(rename = "type")]
-  child_type: FSChildType,
+  pub(super) child_type: FSChildType
 }
 
 impl FSChild {
@@ -66,17 +66,10 @@ impl FSChild {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct FSEntry {
-  name: String,
-  childs: Vec<String>,
-  size: u64
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum FSEvent {
   #[serde(rename = "entry")]
   Entry {
     path: String,
-    data: Vec<FSChild>
+    childs: Vec<FSChild>
   }
 }

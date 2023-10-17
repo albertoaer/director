@@ -10,9 +10,11 @@
   context.setNavigate(navigate);
 
   let route: Route | undefined;
+  
   listen<FSEvent>("updated-entry", (event) => {
+    console.log(event)
     if (event.payload.entry?.path == route?.path && route?.path) {
-      context.pushChilds(event.payload.entry?.data);
+      context.pushChilds(event.payload.entry?.childs);
     }
   });
   
