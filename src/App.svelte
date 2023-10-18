@@ -2,7 +2,7 @@
   import DirectoryFrame from "./lib/DirectoryFrame.svelte";
   import TitleBar from "./lib/TitleBar.svelte";
   import Nav from "./lib/Nav.svelte";
-  import { ExplorerPanel, VoidPanel } from "./lib/panels";
+  import { ExplorerPanel, VoidPanel, AlertsPanel } from "./lib/panels";
   import Theme from "./lib/Theme.svelte";
 
   import exploreIcon from '@iconify/icons-mdi/folder-outline';
@@ -23,7 +23,7 @@
       },
       {
         name: 'alerts',
-        component: VoidPanel,
+        component: AlertsPanel,
         icon: alertsIcon
       },
       {

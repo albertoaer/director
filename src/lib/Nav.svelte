@@ -24,7 +24,7 @@
   }
 
   #panel {
-    padding: 0.5em;
+    padding: 0.7em 0.7em 0.7em calc(0.7em + 1vw);
     width: 100%;
     height: 100%;
   }

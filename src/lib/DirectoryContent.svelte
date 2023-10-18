@@ -1,16 +1,20 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
   import DirRow from "./DirRow.svelte";
   import DirTable from "./DirTable.svelte";
-  import { DirectoryContext } from "./directory_context";
+  import type { FSChild } from "./model";
 
-  const context = DirectoryContext.getOrSet();
-  const childs$ = context.childs$;
+  const dispatch = createEventDispatcher<{ navigate: { route: string } }>();
+
+  export let childs: FSChild[];
 </script>
 
-<DirTable>
-  {#if $childs$}
-    {#each $childs$ as child (child.path)}
-      <DirRow {child} on:navigate={event => context.navigate(event.detail.route)} />
-    {/each}
-  {/if}
+<DirTable let:sizeUnit>
+  {#each childs as child (child.path)}
+    <DirRow
+      {child}
+      mapSize={size => size * sizeUnit.factor + sizeUnit.symbol}
+      on:navigate={event => dispatch("navigate", { route: event.detail.route })}
+    />
+  {/each}
 </DirTable>

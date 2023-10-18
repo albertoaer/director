@@ -3,7 +3,7 @@
   import { routeToString, type Route } from "./model";
   import { fade } from "svelte/transition";
 
-  const dispatch = createEventDispatcher<{ navigate: {route: string} }>();
+  const dispatch = createEventDispatcher<{ navigate: { route: string } }>();
 
   export let route: Route;
 
@@ -61,7 +61,7 @@
     font-size: 1.2em;
     border-radius: 5px;
     overflow: hidden;
-    background-color: rgb(200, 200, 200);
+    background-color: var(--item-color);
   }
 
   input {
@@ -70,6 +70,7 @@
     border: none;
     outline: 0;
     background-color: inherit;
+    color: inherit;
     display: inline-flex;
     width: 100%;
     height: 100%;
@@ -81,13 +82,14 @@
     padding: 0.25em 0.5em;
     border: none;
     background-color: inherit;
+    color: inherit;
     height: 100%;
     font-size: inherit;
   }
   
   button:hover {
     cursor: pointer;
-    background-color: rgb(168, 168, 168);
+    background-color: var(--item-active-color);
     transition: 200ms all ease;
     font-size: inherit;
   }

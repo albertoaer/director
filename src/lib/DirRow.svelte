@@ -12,6 +12,7 @@
   const dispatch = createEventDispatcher<{ navigate: {route: string} }>();
 
   export let child: FSChild;
+  export let mapSize: (size: number) => string = size => size.toString();
 
   function getIcon(type: typeof child.type) {
     switch (type) {
@@ -35,7 +36,9 @@
 
 <tr on:click={click}>
   <td class="name" class:nav={canNavigate(child.type)} ><Icon icon={getIcon(child.type)} />{child.name}</td>
-  <td class:dots={child.size.status === 'Calculating'}>{child.size.value ?? child.size.status}</td>
+  <td class:dots={child.size.status === 'Calculating'}>
+    {child.size.value ? mapSize(child.size.value) : child.size.status}
+  </td>
   {#if child.modified}
     <td>{new Date(child.modified).toLocaleString()}</td>
   {:else}

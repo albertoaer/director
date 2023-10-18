@@ -36,9 +36,8 @@
     display: flex;
     align-items: stretch;
     justify-content: space-between;
-    position: sticky;
-    top: 0;
-    height: 27px;
+    height: 30px;
+    position: relative;
   }
 
   p {
@@ -61,7 +60,7 @@
   }
   
   button:hover {
-    background-color: var(--button-hover);
+    background-color: var(--window-bar-hover-color);
     cursor: pointer;
     transition: 100ms all ease;
   }

@@ -28,6 +28,8 @@
     background-color: var(--nav-bar-color);
     margin: 0;
     padding: 0;
+    box-shadow: 0px 0px 7px 0px black;
+    overflow: hidden;
   }
 
   button {
@@ -43,7 +45,7 @@
   }
   
   li:hover button {
-    background-color: var(--button-hover);
+    background-color: var(--nav-bar-hover-color);
     transition: 200ms background-color ease-out;
   }
 </style>
