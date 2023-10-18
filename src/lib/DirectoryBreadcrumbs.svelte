@@ -2,6 +2,9 @@
   import { createEventDispatcher } from "svelte";
   import { routeToString, type Route } from "./model";
   import { fade } from "svelte/transition";
+  import { open } from "@tauri-apps/api/dialog";
+  import Icon from "@iconify/svelte";
+  import OpenFolderIcon from "@iconify/icons-mdi/folder-open-outline";
 
   const dispatch = createEventDispatcher<{ navigate: { route: string } }>();
 
@@ -36,6 +39,18 @@
     editMode = false;
     dispatch('navigate', { route })
   }
+
+  async function openFolder() {
+    const result = await open({
+      directory: true,
+      multiple: false,
+      recursive: false,
+      defaultPath: route.path,
+      title: 'Open Directory'
+    });
+    if (result && typeof result === 'string')
+      dispatch('navigate', { route: result });
+  }
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -47,6 +62,9 @@
     </form>
   {:else}
     <div in:fade={{ duration: 200 }}>
+      <button on:click|stopPropagation={openFolder}>
+        <Icon icon={OpenFolderIcon} />
+      </button>
       {#each route.items as item}
         <button on:click|stopPropagation={event => handleItemClick(event, item.path)}>
           {item.name}
