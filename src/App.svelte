@@ -7,8 +7,8 @@
 
   import exploreIcon from '@iconify/icons-mdi/folder-outline';
   import alertsIcon from '@iconify/icons-mdi/alert-circle-outline';
-  import settingsIcon from '@iconify/icons-mdi/settings-outline';
   import cleanIcon from '@iconify/icons-mdi/recycle';
+  import settingsIcon from '@iconify/icons-mdi/settings-outline';
 </script>
 
 <Theme />

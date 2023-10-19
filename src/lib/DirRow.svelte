@@ -57,7 +57,7 @@
   }
 
   tr:hover {
-    border-bottom: 1px rgb(212, 212, 212) solid;
+    border-bottom: 1px var(--item-active-color) solid;
     cursor: pointer;
   }
 
