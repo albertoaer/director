@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import DirRow from "./DirRow.svelte";
-  import type { FSChild } from "./model";
+  import type { FSChild } from "./model/fs";
   import { Units, formatBytes } from "./model/units";
   import Table from "./Table.svelte";
   import TableHeader from "./TableHeader.svelte";

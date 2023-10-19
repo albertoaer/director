@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import type { FSChild } from "./model";
+  import type { FSChild } from "./model/fs";
 
   import Icon from "@iconify/svelte";
   import FileIcon from "@iconify/icons-mdi/file-outline";

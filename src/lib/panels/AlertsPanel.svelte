@@ -3,7 +3,7 @@
   import AlarmsTable from "../AlarmsTable.svelte";
   import Button from "../Button.svelte";
   import DirectoryContent from "../DirectoryContent.svelte";
-  import type { FSChild } from "../model";
+  import type { FSChild } from "../model/fs";
   import { fade } from "svelte/transition";
   import type { Alarm } from "../model/alarm";
 

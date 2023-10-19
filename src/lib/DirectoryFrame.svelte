@@ -3,7 +3,7 @@
   import { invoke } from "@tauri-apps/api/tauri";
   import { listen } from "@tauri-apps/api/event";
   import { message } from "@tauri-apps/api/dialog";
-  import type { FSEvent, Route } from "./model";
+  import type { FSEvent, Route } from "./model/fs";
   import { DirectoryContext } from "./directory_context";
 
   let context = DirectoryContext.getOrSet();

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { routeToString, type Route } from "./model";
+  import { routeToString, type Route } from "./model/fs";
   import { fade } from "svelte/transition";
   import { open } from "@tauri-apps/api/dialog";
   import Icon from "@iconify/svelte";

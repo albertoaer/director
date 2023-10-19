@@ -1,6 +1,6 @@
 import { getContext, setContext, hasContext } from "svelte";
 import { writable, type Readable, type Writable } from "svelte/store";
-import type { FSChild, Route } from "./model";
+import type { FSChild, Route } from "./model/fs";
 
 const key = 'directory-context';
 
