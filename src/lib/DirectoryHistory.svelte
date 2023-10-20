@@ -3,7 +3,7 @@
 
   function handlePopState(event: PopStateEvent) {
     if (event.state?.route?.path)
-      navigate(event.state.route.path);
+      navigate(event.state.route.path, false);
   }
 </script>
 
