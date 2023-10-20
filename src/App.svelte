@@ -1,5 +1,4 @@
 <script lang="ts">
-  import DirectoryFrame from "./lib/DirectoryFrame.svelte";
   import TitleBar from "./lib/TitleBar.svelte";
   import Nav from "./lib/Nav.svelte";
   import { ExplorerPanel, VoidPanel, AlertsPanel } from "./lib/panels";
@@ -14,30 +13,28 @@
 <Theme />
 <div id="app">
   <TitleBar />
-  <DirectoryFrame>
-    <Nav items={[
-      {
-        name: 'explore',
-        component: ExplorerPanel,
-        icon: exploreIcon
-      },
-      {
-        name: 'alerts',
-        component: AlertsPanel,
-        icon: alertsIcon
-      },
-      {
-        name: 'clean',
-        component: VoidPanel,
-        icon: cleanIcon,
-      },
-      {
-        name: 'settings',
-        component: VoidPanel,
-        icon: settingsIcon
-      }
-    ]} />
-  </DirectoryFrame>
+  <Nav items={[
+    {
+      name: 'explore',
+      component: ExplorerPanel,
+      icon: exploreIcon
+    },
+    {
+      name: 'alerts',
+      component: AlertsPanel,
+      icon: alertsIcon
+    },
+    {
+      name: 'clean',
+      component: VoidPanel,
+      icon: cleanIcon,
+    },
+    {
+      name: 'settings',
+      component: VoidPanel,
+      icon: settingsIcon
+    }
+  ]} />
 </div>
 
 <style>

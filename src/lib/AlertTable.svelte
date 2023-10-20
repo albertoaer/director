@@ -1,17 +1,17 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import type { Alarm } from "./model/alarm";
+  import type { Alert } from "./model/alert";
   import Table from "./Table.svelte";
   import TableHeader from "./TableHeader.svelte";
   import Icon from "@iconify/svelte";
   import IconRemove from "@iconify/icons-mdi/remove-box-outline";
 
-  const dispatch = createEventDispatcher<{ select: Alarm, remove: Alarm }>();
+  const dispatch = createEventDispatcher<{ select: Alert, remove: Alert }>();
 
-  export let alarms: Alarm[];
+  export let alerts: Alert[];
 </script>
 
-{#if alarms.length}
+{#if alerts.length}
   <Table>
     <svelte:fragment slot="headers">
       <TableHeader>Name</TableHeader>
@@ -19,25 +19,25 @@
       <TableHeader>Items</TableHeader>
       <TableHeader></TableHeader>
     </svelte:fragment>
-    {#each alarms as alarm}
-      <tr on:click={_ => dispatch("select", alarm)} class="row">
+    {#each alerts as alert}
+      <tr on:click={_ => dispatch("select", alert)} class="row">
         <td>
-          {alarm.name}
+          {alert.name}
         </td>
         <td>
-          {alarm.filter.minSize} {alarm.filter.sizeUnit.symbol}
+          {alert.filter.minSize} {alert.filter.sizeUnit.symbol}
         </td>
         <td>
-          {alarm.filter.item}
+          {alert.filter.item}
         </td>
-        <td class="remove" on:click={_ => dispatch("remove", alarm)}>
+        <td class="remove" on:click={_ => dispatch("remove", alert)}>
           <Icon icon={IconRemove} />
         </td>
       </tr>
     {/each}
   </Table>
 {:else}
-  <h3>No alarms</h3>
+  <h3>No alerts</h3>
 {/if}
 
 <style>

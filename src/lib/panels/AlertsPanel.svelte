@@ -1,56 +1,63 @@
 <script lang="ts">
-  import AlarmsEditor from "../AlarmsEditor.svelte";
-  import AlarmsTable from "../AlarmsTable.svelte";
+  import AlertEditor from "../AlertEditor.svelte";
+  import AlertTable from "../AlertTable.svelte";
   import Button from "../Button.svelte";
   import DirectoryContent from "../DirectoryContent.svelte";
   import type { FSChild } from "../model/fs";
   import { fade } from "svelte/transition";
-  import type { Alarm } from "../model/alarm";
+  import type { Alert } from "../model/alert";
+  import { alerts$, saveAlerts } from "../AlertsManager.svelte";
 
   let editing = false;
 
-  let childs: FSChild[] = []
-  let alarms: Alarm[] = [];
+  $: if (!editing) {
+    saveAlerts(alerts);
+  }
 
-  function appendAlarm(newAlarm: Alarm) {
-    for (const [idx, alarm] of alarms.entries()) {
-      if (alarm.name === newAlarm.name) {
-        alarms[idx] = newAlarm;
+  let childs: FSChild[] = []
+  let alerts: Alert[] = [];
+
+  $: if ($alerts$) alerts = $alerts$;
+
+  function appendAlert(newAlert: Alert) {
+    for (const [idx, alert] of alerts.entries()) {
+      if (alert.name === newAlert.name) {
+        alerts[idx] = newAlert;
         return;
       } 
     }
-    alarms.push(newAlarm);
-    alarms = alarms;
+    alerts.push(newAlert);
+    alerts = alerts;
   }
 
-  function removeAlarm(alarm: Alarm) {
-    const idx = alarms.findIndex(x => x.name == alarm.name);
+  function removeAlert(alert: Alert) {
+    const idx = alerts.findIndex(x => x.name == alert.name);
     if (idx >= 0) {
-      alarms.splice(idx, 1);
-      alarms = alarms;
+      alerts.splice(idx, 1);
+      alerts = alerts;
     }
   }
 
-  let active_alarm: Alarm | undefined = undefined;
+  let editing_alert: Alert | undefined = undefined;
 </script>
 
 <div id="content">
   {#key editing}
     <div in:fade>
       {#if !editing}
-        <h2>{childs.length} {childs.length == 1 ? "file has" : "files have"} set off the alarms</h2>
+        <h2>{childs.length} {childs.length == 1 ? "file has" : "files have"} triggered the alerts</h2>
         <DirectoryContent {childs} />
       {:else}
-        <h2>Editing current set of alarms</h2>
+        <h2>Editing current set of alerts</h2>
         <div id="editor">
           <div>
-            <AlarmsTable {alarms}
-              on:select={ev => active_alarm = ev.detail}
-              on:remove={ev => removeAlarm(ev.detail)}
+            <AlertTable {alerts}
+              on:select={ev => editing_alert = ev.detail}
+              on:remove={ev => removeAlert(ev.detail)}
             />
           </div>
           <div>
-            <AlarmsEditor alarm={active_alarm} on:produce={ev => appendAlarm(ev.detail)} />
+            <AlertEditor alert={editing_alert} on:produce={ev => appendAlert(ev.detail)} />
           </div>
         </div>
       {/if}
@@ -58,7 +65,7 @@
   {/key}
 
   <footer>
-    <Button on:click={_ => editing = !editing}>{!editing ? "Edit Active Alarms" : "Finish Editing"}</Button>
+    <Button on:click={_ => editing = !editing}>{!editing ? "Edit Active Alerts" : "Finish Editing"}</Button>
   </footer>
 </div>
 

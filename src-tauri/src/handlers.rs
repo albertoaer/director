@@ -51,3 +51,11 @@ pub fn request_directory(
   let prefixed = path.components().next().and_then(|x| Some(matches!(x, path::Component::Prefix(_)))).unwrap_or(false);
   return Ok(Route { items: components.into_iter().rev().collect(), path: path_name, prefixed: prefixed });
 }
+
+#[tauri::command]
+pub fn save_alerts(
+  state: tauri::State<state::AppState>,
+  alerts: Vec<String>
+) {
+
+}

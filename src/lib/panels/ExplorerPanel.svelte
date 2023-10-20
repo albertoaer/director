@@ -1,23 +1,23 @@
 <script lang="ts">
   import DirectoryBreadcrumbs from "../DirectoryBreadcrumbs.svelte";
   import DirectoryContent from "../DirectoryContent.svelte";
-  import { DirectoryContext } from "../directory_context";
+  import DirectoryHistory from "../DirectoryHistory.svelte";
+  import { route$, childs$, navigate } from "../FSManager.svelte";
 
-  const context = DirectoryContext.getOrSet();
-  const route$ = context.route$;
-  const childs$ = context.childs$;
-
-  function navigate(ev: CustomEvent<{ route: string}>) {
-    context.navigate(ev.detail.route);
+  function handleNavigate(ev: CustomEvent<{ route: string}>) {
+    navigate(ev.detail.route);
   }
 </script>
 
-<DirectoryBreadcrumbs route={$route$} on:navigate={navigate} />
-<div id="content">
-  {#if $childs$}
-    <DirectoryContent childs={$childs$} on:navigate={navigate} />
-  {/if}
-</div>
+<DirectoryHistory />
+{#if $route$}
+  <DirectoryBreadcrumbs route={$route$} on:navigate={handleNavigate} />
+  <div id="content">
+    {#if $childs$}
+      <DirectoryContent childs={$childs$} on:navigate={handleNavigate} />
+    {/if}
+  </div>
+{/if}
 
 <style>
   #content {

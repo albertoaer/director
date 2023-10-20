@@ -32,7 +32,10 @@ fn main() {
       _ => {}
     })
     .manage(state::AppState::new())
-    .invoke_handler(tauri::generate_handler![handlers::request_directory])
+    .invoke_handler(tauri::generate_handler![
+      handlers::request_directory,
+      handlers::save_alerts
+    ])
     .setup(|app| {
       #[cfg(any(windows, target_os = "macos"))]
       {

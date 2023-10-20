@@ -8,7 +8,6 @@
     if (value == 0 || !allow) return;
     const mov = value / -Math.abs(value);
     fontSize = Math.min(Math.max(minFontSize, fontSize + (mov * 0.2)), maxFontSize);
-    console.log(fontSize);
   }
 </script>
 

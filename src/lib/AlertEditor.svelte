@@ -2,23 +2,23 @@
   import { createEventDispatcher } from "svelte";
   import Button from "./Button.svelte";
   import { Units, type Unit } from "./model/units";
-  import { AlarmItems, type AlarmItem, type Alarm } from "./model/alarm";
+  import { AlertItems, type AlertItem, type Alert } from "./model/alert";
 
-  const dispatch = createEventDispatcher<{ produce: Alarm }>();
+  const dispatch = createEventDispatcher<{ produce: Alert }>();
 
-  export let alarm: Alarm | undefined = undefined;
+  export let alert: Alert | undefined = undefined;
 
   let name: string = '';
-  let item: AlarmItem = 'all';
+  let item: AlertItem = 'all';
   let minSize: number = 0;
   let sizeUnit: Unit = Units[0];
 
-  $: if (alarm) {
-    name = alarm.name;
-    item = alarm.filter.item;
-    minSize = alarm.filter.minSize;
-    sizeUnit = alarm.filter.sizeUnit;
-    alarm = undefined;
+  $: if (alert) {
+    name = alert.name;
+    item = alert.filter.item;
+    minSize = alert.filter.minSize;
+    sizeUnit = alert.filter.sizeUnit;
+    alert = undefined;
   }
 
   function apply() {
@@ -34,12 +34,12 @@
 </script>
 
 <form on:submit|preventDefault>
-  <h1>Configure alarm</h1>
+  <h1>Configure alert</h1>
   <label for="name">Name</label>
   <input type="text" name="name" id="name" bind:value={name}>
   <label for="name">Size</label>
   <div class="row">
-    <input type="number" name="size" id="size" bind:value={minSize}>
+    <input class="row-main" type="number" name="size" id="size" bind:value={minSize}>
     <select name="unit" bind:value={sizeUnit}>
       {#each Units as unit}
         <option
@@ -52,15 +52,15 @@
     </select>
   </div>
   <div class="row">
-    {#each AlarmItems as alarmItem}
+    {#each AlertItems as alertItem}
       <div>
         <input type="radio" name="only"
-          value={alarmItem}
-          id="{alarmItem}_input"
-          checked={item === alarmItem}
-          on:change={_ => item = alarmItem}
+          value={alertItem}
+          id="{alertItem}_input"
+          checked={item === alertItem}
+          on:change={_ => item = alertItem}
         >
-        <label for="{alarmItem}_input">{alarmItem}</label>
+        <label for="{alertItem}_input">{alertItem}</label>
       </div>
     {/each}
   </div>
@@ -91,16 +91,18 @@
     border-radius: 5px;
     color: inherit;
     text-align: left;
+    min-width: 0;
   }
   
   .row {
     display: flex;
-    width: 100%;
-    justify-content: stretch;
-    align-items: stretch;
   }
 
   .row > * {
-    flex-grow: 1;
+    flex: 1 1 0;
+  }
+  
+  .row > .row-main {
+    flex: 3 0 0;
   }
 </style>
