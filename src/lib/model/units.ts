@@ -31,5 +31,5 @@ export function converFromBytes(value: number, factor: number) {
 }
 
 export function formatBytes(value: number, unit: Unit) {
-  return converFromBytes(value, unit.factor) + unit.symbol;
+  return `${converFromBytes(value, unit.factor)} ${unit.symbol}`;
 }
