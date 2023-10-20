@@ -19,7 +19,7 @@
 <Table>
   <svelte:fragment slot="headers">
     <TableHeader>Name</TableHeader>
-    <TableHeader on:click={updateSizeUnit} action>Size</TableHeader>
+    <TableHeader on:click={updateSizeUnit} action>Size ({Units[sizeUnitsIdx].symbol})</TableHeader>
     <TableHeader>Modified</TableHeader>
     <TableHeader>Created</TableHeader>
   </svelte:fragment>
