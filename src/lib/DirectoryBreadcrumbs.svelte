@@ -5,6 +5,7 @@
   import { open } from "@tauri-apps/api/dialog";
   import Icon from "@iconify/svelte";
   import OpenFolderIcon from "@iconify/icons-mdi/folder-open-outline";
+    import { tooltip } from "./Tooltip.svelte";
 
   const dispatch = createEventDispatcher<{ navigate: { route: string } }>();
 
@@ -62,11 +63,14 @@
     </form>
   {:else}
     <div in:fade={{ duration: 200 }}>
-      <button on:click|stopPropagation={openFolder}>
+      <button on:click|stopPropagation={openFolder} use:tooltip={{ content: 'open folder', singleton: 'directory-bar' }}>
         <Icon icon={OpenFolderIcon} />
       </button>
       {#each route.items as item}
-        <button on:click|stopPropagation={event => handleItemClick(event, item.path)}>
+        <button
+          on:click|stopPropagation={event => handleItemClick(event, item.path)}
+          use:tooltip={{ content: item.path, singleton: 'directory-bar' }}
+        >
           {item.name}
         </button>
       {/each}

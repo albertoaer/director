@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher, type ComponentType } from "svelte";
   import Icon, { type IconifyIcon } from "@iconify/svelte";
+  import { tooltip } from "./Tooltip.svelte";
 
   interface NavigationItem {
     name: string,
@@ -15,7 +16,7 @@
 
 <ul id="bar">
   {#each items as item (item.name)}
-    <li class="item">
+    <li class="item" use:tooltip={{ content: item.name, placement: 'right' }}>
       <button on:click={_ => dispatch('selected', item)}>
         <Icon icon={item.icon} color="var(--font-color)" />
       </button>
