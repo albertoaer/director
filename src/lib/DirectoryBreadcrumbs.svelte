@@ -5,7 +5,8 @@
   import { open } from "@tauri-apps/api/dialog";
   import Icon from "@iconify/svelte";
   import OpenFolderIcon from "@iconify/icons-mdi/folder-open-outline";
-    import { tooltip } from "./Tooltip.svelte";
+  import CalculateFolderIcon from "@iconify/icons-mdi/scale-unbalanced";
+  import { tooltip } from "./Tooltip.svelte";
 
   const dispatch = createEventDispatcher<{ navigate: { route: string } }>();
 
@@ -21,8 +22,8 @@
 
   const DOUBLE_CLICK_TIMEOUT = 250;
 
-  function handleItemClick(event: MouseEvent, route: string) {
-    if (event.detail == 1) {
+  function handleItemClick(event: MouseEvent, route: string | undefined) {
+    if (event.detail == 1 && route) {
       timeout = setTimeout(() => submit(route), DOUBLE_CLICK_TIMEOUT);
     }
     if (event.detail == 2) {
@@ -56,20 +57,30 @@
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div id="bar" on:click={_ => editMode = true}>
+<div id="bar" on:click|stopPropagation={event => handleItemClick(event, undefined)}>
   {#if editMode}
     <form in:fade={{ duration: 200 }} on:submit|preventDefault={_ => submit(editValue)}>
       <input use:setupInput bind:value={editValue} type="text" on:blur={_ => editMode = false}>
     </form>
   {:else}
-    <div in:fade={{ duration: 200 }}>
-      <button on:click|stopPropagation={openFolder} use:tooltip={{ content: 'open folder', singleton: 'directory-bar' }}>
-        <Icon icon={OpenFolderIcon} />
+    <div id="buttons" in:fade={{ duration: 200 }}>
+      <button
+        on:click|stopPropagation={openFolder}
+        use:tooltip={{ content: 'calculate folder', singleton: 'dir-bar' }}
+      >
+        <Icon icon={CalculateFolderIcon} inline />
+      </button>
+      <vr />
+      <button
+        on:click|stopPropagation={openFolder}
+        use:tooltip={{ content: 'open folder', singleton: 'dir-bar' }}
+      >
+        <Icon icon={OpenFolderIcon} inline />
       </button>
       {#each route.items as item}
         <button
           on:click|stopPropagation={event => handleItemClick(event, item.path)}
-          use:tooltip={{ content: item.path, singleton: 'directory-bar' }}
+          use:tooltip={{ content: item.path, singleton: 'dir-bar' }}
         >
           {item.name}
         </button>
@@ -84,6 +95,7 @@
     border-radius: 5px;
     overflow: hidden;
     background-color: var(--item-color);
+    flex: 1 1 0;
   }
 
   input {
@@ -114,5 +126,17 @@
     background-color: var(--item-active-color);
     transition: 200ms all ease;
     font-size: inherit;
+  }
+
+  #buttons {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  vr {
+    width: 2px;
+    background-color: var(--font-color);
+    margin: 5px;
+    user-select: none;
   }
 </style>

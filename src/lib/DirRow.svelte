@@ -8,11 +8,13 @@
   import LinkIcon from "@iconify/icons-mdi/link";
   import OtherIcon from "@iconify/icons-mdi/question-mark";
   import UndefinedIcon from "@iconify/icons-mdi/error";
+  import { ctxPayload, type ContextMenuEvent } from "./ContextMenu.svelte";
 
   const dispatch = createEventDispatcher<{ navigate: {route: string} }>();
 
   export let child: FSChild;
   export let mapSize: (size: number) => string = size => size.toString();
+  export let contextMenu: ContextMenuEvent | undefined = undefined;
 
   function getIcon(type: typeof child.type) {
     switch (type) {
@@ -34,10 +36,10 @@
   }
 </script>
 
-<tr on:click={click}>
+<tr use:ctxPayload={{ id: child.path }} on:click={click} on:contextmenu={contextMenu}>
   <td class="name" class:nav={canNavigate(child.type)} ><Icon icon={getIcon(child.type)} />{child.name}</td>
   <td class:dots={child.size.status === 'Calculating'}>
-    {child.size.value ? mapSize(child.size.value) : child.size.status}
+    {child.size.value !== undefined ? mapSize(child.size.value) : child.size.status}
   </td>
   {#if child.modified}
     <td>{new Date(child.modified).toLocaleString()}</td>
@@ -56,7 +58,7 @@
     border-bottom: 1px transparent solid;
   }
 
-  tr:hover {
+  tr:hover, tr:active {
     border-bottom: 1px var(--item-active-color) solid;
     cursor: pointer;
   }

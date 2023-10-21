@@ -18,7 +18,7 @@
 
   export async function navigate(directory: string, historyRecord: boolean = true) {
     try {
-      route = await invoke<Route>('request_directory', { directory });
+      route = await invoke<Route>('request_calculate_directory', { directory });
       route$.set(route);
     } catch (err: any) {
       message(err.toString(), { type: 'error' });
