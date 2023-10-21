@@ -34,6 +34,7 @@ fn main() {
     .manage(state::AppState::new())
     .invoke_handler(tauri::generate_handler![
       handlers::request_directory,
+      handlers::request_calculate_directory,
       handlers::save_alerts
     ])
     .setup(|app| {

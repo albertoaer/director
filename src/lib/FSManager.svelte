@@ -16,15 +16,21 @@
     }
   });
 
-  export async function navigate(directory: string, historyRecord: boolean = true) {
+  export interface NavigateOptions {
+    historyRecord: boolean,
+    calculate: boolean
+  }
+
+  export async function navigate(directory: string, options: Partial<NavigateOptions> | undefined = undefined) {
     try {
-      route = await invoke<Route>('request_calculate_directory', { directory });
+      const cmd = options?.calculate ? 'request_calculate_directory' : 'request_directory';
+      route = await invoke<Route>(cmd, { directory });
       route$.set(route);
     } catch (err: any) {
       message(err.toString(), { type: 'error' });
     }
     // at this point the route is ensured
-    if (historyRecord)
+    if (options?.historyRecord ?? true)
       history.pushState({route}, '', '');
   }
 

@@ -8,7 +8,8 @@
   import ContextMenu from "./ContextMenu.svelte";
   import ContextMenuItem from "./ContextMenuItem.svelte";
   import NavigateIcon from '@iconify/icons-mdi/chevron-right';
-    import { navigate } from "./FSManager.svelte";
+  import CalculateIcon from '@iconify/icons-mdi/scale-unbalanced';
+  import { navigate } from "./FSManager.svelte";
 
   const dispatch = createEventDispatcher<{ navigate: { route: string } }>();
 
@@ -23,7 +24,12 @@
 <ContextMenu let:contextMenu>
   <svelte:fragment slot="menu" let:payload>
     {#if payload}
-      <ContextMenuItem icon={NavigateIcon} on:click={_ => navigate(payload.id)}>navigate</ContextMenuItem>
+      <ContextMenuItem icon={NavigateIcon} on:click={_ => navigate(payload.id)}>
+        navigate
+      </ContextMenuItem>
+      <ContextMenuItem icon={CalculateIcon} on:click={_ => navigate(payload.id, { calculate: true })}>
+        navigate & calculate
+      </ContextMenuItem>
     {/if}
   </svelte:fragment>
   <Table>

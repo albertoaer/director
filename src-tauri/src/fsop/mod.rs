@@ -3,8 +3,10 @@ use std::{collections::HashMap, sync::{Arc, RwLock}, thread, fs, io};
 use crate::ds;
 
 mod data;
-
 pub use data::*;
+
+mod routes;
+pub use routes::*;
 
 #[derive(Clone)]
 pub struct FSManager {

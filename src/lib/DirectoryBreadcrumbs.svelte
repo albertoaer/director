@@ -8,7 +8,10 @@
   import CalculateFolderIcon from "@iconify/icons-mdi/scale-unbalanced";
   import { tooltip } from "./Tooltip.svelte";
 
-  const dispatch = createEventDispatcher<{ navigate: { route: string } }>();
+  const dispatch = createEventDispatcher<{
+    navigate: { route: string },
+    calculate: { route: string }
+  }>();
 
   export let route: Route;
 
@@ -53,6 +56,10 @@
     if (result && typeof result === 'string')
       dispatch('navigate', { route: result });
   }
+
+  function calculateFolder() {
+    dispatch('calculate', { route: route.path });
+  }
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -65,7 +72,7 @@
   {:else}
     <div id="buttons" in:fade={{ duration: 200 }}>
       <button
-        on:click|stopPropagation={openFolder}
+        on:click|stopPropagation={calculateFolder}
         use:tooltip={{ content: 'calculate folder', singleton: 'dir-bar' }}
       >
         <Icon icon={CalculateFolderIcon} inline />

@@ -1,4 +1,4 @@
-use std::{fs, collections::hash_map::DefaultHasher, hash::{Hash, Hasher}};
+use std::fs;
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum FSChildType {

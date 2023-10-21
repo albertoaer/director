@@ -7,11 +7,15 @@
   function handleNavigate(ev: CustomEvent<{ route: string}>) {
     navigate(ev.detail.route);
   }
+
+  function handleCalculate(ev: CustomEvent<{ route: string}>) {
+    navigate(ev.detail.route, { calculate: true });
+  }
 </script>
 
 <DirectoryHistory />
 {#if $route$}
-  <DirectoryBreadcrumbs route={$route$} on:navigate={handleNavigate} />
+  <DirectoryBreadcrumbs route={$route$} on:navigate={handleNavigate} on:calculate={handleCalculate} />
   <div id="content">
     {#if $childs$}
       <DirectoryContent childs={$childs$} on:navigate={handleNavigate} />
