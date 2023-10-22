@@ -1,4 +1,4 @@
-use std::{env, path, ffi};
+use std::{env, path, ffi, io, fs};
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct RouteItem {
@@ -42,6 +42,10 @@ impl Route {
 
   pub fn prefixed(&self) -> &bool {
     &self.prefixed
+  }
+
+  pub fn ensure_exists(&self) -> io::Result<()> {
+    fs::metadata(&self.path).map(|_| ())
   }
 }
 

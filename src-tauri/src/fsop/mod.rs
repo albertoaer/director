@@ -10,6 +10,7 @@ pub use routes::*;
 
 #[derive(Clone)]
 pub struct FSManager {
+  orders: Arc<RwLock<Vec<FSOrder>>>,
   sizes: Arc<RwLock<HashMap<String, u128>>>,
   listenners: Arc<RwLock<ds::Publisher<FSEvent>>>
 }
@@ -17,6 +18,7 @@ pub struct FSManager {
 impl FSManager {
   pub fn new() -> Self {
     FSManager {
+      orders: Arc::new(RwLock::new(Vec::new())),
       sizes: Arc::new(RwLock::new(HashMap::new())),
       listenners: Arc::new(RwLock::new(ds::Publisher::new()))
     }
@@ -31,13 +33,17 @@ impl FSManager {
     reader.publish(event);
   }
 
-  fn entries_to_fschilds(entries: fs::ReadDir, sizes: &mut HashMap<String, u128>) -> Vec<FSChild> {
+  fn entries_to_fschilds(entries: fs::ReadDir, calculating: bool, sizes: &mut HashMap<String, u128>) -> Vec<FSChild> {
     let mut readed: Vec<FSChild> = vec![];
     for entry in entries {
       if let Ok(entry) = entry {
         let mut child = FSChild::new(&entry);
-        if let Some(size) = sizes.get(&child.path) {
-          child.size = FSSizeStatus::Calculated(*size);
+        if let FSSizeStatus::NotCalculated = child.size {
+          if let Some(size) = sizes.get(&child.path) {
+            child.size = FSSizeStatus::Calculated(*size);
+          } else if calculating {
+            child.size = FSSizeStatus::Calculating;
+          }
         }
         readed.push(child);
       }
@@ -45,13 +51,14 @@ impl FSManager {
     readed
   }
 
-  pub fn get_entry(&self, path: &String) -> io::Result<()> {
+  pub fn publish_entry(&self, path: &String) -> io::Result<()> {
     let manager: FSManager = self.clone();
     let path = path.clone();
     let entries = fs::read_dir(&path)?;
     thread::spawn(move || {
       let mut sizes = manager.sizes.write().unwrap();
-      let childs = Self::entries_to_fschilds(entries, &mut sizes);
+      let calculating = manager.orders.read().unwrap().iter().find(|x| x.is_child(&path)).is_some();
+      let childs = Self::entries_to_fschilds(entries, calculating, &mut sizes);
       manager.publish(&FSEvent::Entry { path, childs });
     });
     Ok(())
@@ -60,13 +67,8 @@ impl FSManager {
   fn calculate_entry_rec(&self, path: &String) -> io::Result<u128> {
     let mut childs = {
       let mut sizes = self.sizes.write().unwrap();
-      Self::entries_to_fschilds(fs::read_dir(&path)?, &mut sizes)
+      Self::entries_to_fschilds(fs::read_dir(&path)?, true, &mut sizes)
     };
-    for child in &mut childs {
-      if let FSSizeStatus::NotCalculated = child.size {
-        child.size = FSSizeStatus::Calculating
-      }
-    }
     self.publish(&FSEvent::Entry { path: path.clone(), childs: childs.clone() });
     let mut result = 0;
     for child in &mut childs {
@@ -86,14 +88,29 @@ impl FSManager {
     Ok(result)
   }
 
-  pub fn calculate_entry(&self, path: &String) -> io::Result<()> {
+  pub fn process_order(&self, mut order: FSOrder) -> io::Result<()> {
+    let mut orders = self.orders.write().unwrap();
+    for _order in orders.iter() {
+      if *_order > order {
+        return Ok(()); // Already processing an order containing the requesting tree
+      }
+    }
     let manager = self.clone();
-    let path = path.clone();
+    let path = order.path.clone().to_str().unwrap().to_string();
+    order.set_status(FSOrderStatus::Running);
+    orders.push(order);
     thread::spawn(move || {
       if let Some(_) = manager.sizes.read().unwrap().get(&path) {
         return
       }
       manager.calculate_entry_rec(&path).unwrap();
+      let mut orders = manager.orders.write().unwrap();
+      for _order in orders.iter_mut() {
+        let order_path = _order.path.clone().to_str().unwrap().to_string();
+        if order_path == path {
+          _order.set_status(FSOrderStatus::Finished)
+        }
+      }
     });
     Ok(())
   }

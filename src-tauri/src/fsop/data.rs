@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fs, path::PathBuf};
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum FSChildType {
@@ -71,5 +71,58 @@ pub enum FSEvent {
   Entry {
     path: String,
     childs: Vec<FSChild>
+  },
+  #[serde(rename = "order")]
+  Order {
+    order: FSOrder
+  }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub enum FSOrderStatus {
+  Unknown,
+  Running,
+  Finished
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct FSOrder {
+  pub(super) path: PathBuf,
+  pub(super) status: FSOrderStatus
+}
+
+impl FSOrder {
+  pub fn new(path: impl Into<PathBuf>) -> Self {
+    FSOrder { path: path.into(), status: FSOrderStatus::Unknown }
+  }
+
+  pub fn is_child(&self, other: impl Into<PathBuf>) -> bool {
+    let path: PathBuf = other.into();
+    path.starts_with(&self.path)
+  }
+  
+  pub fn set_status(&mut self, status: FSOrderStatus) {
+    self.status = status
+  }
+}
+
+impl PartialEq for FSOrder {
+  fn eq(&self, other: &Self) -> bool {
+    self.path == other.path
+  }
+}
+
+impl PartialOrd for FSOrder {
+  fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+    if self.path == other.path {
+      return Some(std::cmp::Ordering::Equal);
+    }
+    if self.is_child(&other.path) {
+      Some(std::cmp::Ordering::Greater)
+    } else if other.is_child(&self.path) {
+      Some(std::cmp::Ordering::Less)
+    } else {
+      None
+    }
   }
 }

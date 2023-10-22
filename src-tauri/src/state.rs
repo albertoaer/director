@@ -29,7 +29,8 @@ impl Subscriber<fsop::FSEvent> for WindowNotifier {
           }
           window.emit("updated-entry", event).unwrap();
         }
-      }
+      },
+      _ => ()
     }
   }
 }
