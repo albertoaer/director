@@ -54,7 +54,7 @@ impl Alert {
       return false
     }
     match child.size() {
-      FSSizeStatus::Calculated(size) | FSSizeStatus::Known(size) if *size < self.filter.size() => true,
+      FSSizeStatus::Calculated(size) | FSSizeStatus::Known(size) if *size > self.filter.size() => true,
       _ => false
     }
   }
