@@ -5,6 +5,7 @@ use tauri::{SystemTray, SystemTrayEvent, Manager, SystemTrayMenu, CustomMenuItem
 use window_shadows::set_shadow;
 
 mod handlers;
+mod alerts;
 mod state;
 mod fsop;
 mod ds;

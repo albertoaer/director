@@ -9,6 +9,7 @@
   import OtherIcon from "@iconify/icons-mdi/question-mark";
   import UndefinedIcon from "@iconify/icons-mdi/error";
   import { ctxPayload, type ContextMenuEvent } from "./ContextMenu.svelte";
+    import tippy from "tippy.js";
 
   const dispatch = createEventDispatcher<{ navigate: {route: string} }>();
 
@@ -36,7 +37,7 @@
   }
 </script>
 
-<tr use:ctxPayload={{ id: child.path }} on:click={click} on:contextmenu={contextMenu}>
+<tr use:ctxPayload={{ id: child.path }} use:tippy={{ content: child.path }} on:click={click} on:contextmenu={contextMenu}>
   <td class="name" class:nav={canNavigate(child.type)} ><Icon icon={getIcon(child.type)} />{child.name}</td>
   <td class:dots={child.size.status === 'Calculating'}>
     {child.size.value !== undefined ? mapSize(child.size.value) : child.size.status}

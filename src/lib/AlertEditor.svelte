@@ -39,7 +39,7 @@
   <input type="text" name="name" id="name" bind:value={name}>
   <label for="name">Size</label>
   <div class="row">
-    <input class="row-main" type="number" name="size" id="size" bind:value={minSize}>
+    <input class="row-main" type="number" name="size" id="size" bind:value={minSize} min="0">
     <select name="unit" bind:value={sizeUnit}>
       {#each Units as unit}
         <option

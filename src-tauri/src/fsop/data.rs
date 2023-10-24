@@ -63,6 +63,30 @@ impl FSChild {
       child_type
     }
   }
+
+  pub fn name(&self) -> &String {
+    &self.name
+  }
+
+  pub fn path(&self) -> &String {
+    &self.path
+  }
+
+  pub fn size(&self) -> &FSSizeStatus {
+    &self.size
+  }
+
+  pub fn modified(&self) -> &Option<u128> {
+    &self.modified
+  }
+
+  pub fn created(&self) -> &Option<u128> {
+    &self.created
+  }
+
+  pub fn child_type(&self) -> &FSChildType {
+    &self.child_type
+  }
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]

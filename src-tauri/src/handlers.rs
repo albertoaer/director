@@ -1,4 +1,6 @@
-use crate::{state, fsop::*};
+use tauri::AppHandle;
+
+use crate::{state, fsop::*, alerts};
 
 #[tauri::command]
 pub fn request_directory(
@@ -10,7 +12,7 @@ pub fn request_directory(
   route.ensure_exists().map_err(|err| err.to_string())?;
   
   let manager = state.inner().fs_manager();
-  state.associate_folder(window, route.path().clone());
+  state.route_notifier().set(window, route.path().clone());
   manager.publish_entry(route.path()).map_err(|err| err.to_string())?;
   
   Ok(route)
@@ -26,7 +28,7 @@ pub fn request_calculate_directory(
   route.ensure_exists().map_err(|err| err.to_string())?;
 
   let manager = state.inner().fs_manager();
-  state.associate_folder(window, route.path().clone());
+  state.route_notifier().set(window, route.path().clone());
   manager.publish_entry(route.path()).map_err(|err| err.to_string())?;
 
   manager.process_order(FSOrder::new(route.path())).map_err(|err| err.to_string())?;
@@ -36,8 +38,10 @@ pub fn request_calculate_directory(
 
 #[tauri::command]
 pub fn save_alerts(
+  app_handle: AppHandle,
   state: tauri::State<state::AppState>,
-  alerts: Vec<String>
+  alerts: Vec<alerts::Alert>
 ) {
-
+  state.alert_notifier().set_handler(app_handle);
+  state.alert_notifier().set_alerts(alerts);
 }

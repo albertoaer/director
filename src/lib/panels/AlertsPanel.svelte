@@ -6,7 +6,7 @@
   import type { FSChild } from "../model/fs";
   import { fade } from "svelte/transition";
   import type { Alert } from "../model/alert";
-  import { alerts$, saveAlerts } from "../AlertsManager.svelte";
+  import { detections$, alerts$, saveAlerts } from "../AlertsManager.svelte";
 
   let editing = false;
 
@@ -14,7 +14,6 @@
     saveAlerts(alerts);
   }
 
-  let childs: FSChild[] = []
   let alerts: Alert[] = [];
 
   $: if ($alerts$) alerts = $alerts$;
@@ -45,8 +44,8 @@
   {#key editing}
     <div in:fade>
       {#if !editing}
-        <h2>{childs.length} {childs.length == 1 ? "file has" : "files have"} triggered the alerts</h2>
-        <DirectoryContent {childs} />
+        <h2>{$detections$.length} {$detections$.length == 1 ? "file has" : "files have"} triggered the alerts</h2>
+        <DirectoryContent childs={$detections$} />
       {:else}
         <h2>Editing current set of alerts</h2>
         <div id="editor">
@@ -82,7 +81,6 @@
     align-content: center;
     flex-direction: column;
     justify-content: space-between;
-    height: calc(100% - 4em);
   }
 
   footer {
