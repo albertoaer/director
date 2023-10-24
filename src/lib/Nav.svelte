@@ -26,6 +26,6 @@
   #panel {
     padding: 0.7em 0.7em 0.7em calc(0.7em + 1vw);
     width: 100%;
-    height: 100%;
+    height: calc(100% - 4em);
   }
 </style>

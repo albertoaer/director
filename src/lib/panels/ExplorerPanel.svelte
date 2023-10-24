@@ -26,8 +26,8 @@
 <style>
   #content {
     margin-top: 0.5em;
-    height: calc(100% - 4em);
     width: 100%;
     overflow-y: auto;
+    height: 100%;
   }
 </style>

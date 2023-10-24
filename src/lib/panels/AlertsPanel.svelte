@@ -3,7 +3,6 @@
   import AlertTable from "../AlertTable.svelte";
   import Button from "../Button.svelte";
   import DirectoryContent from "../DirectoryContent.svelte";
-  import type { FSChild } from "../model/fs";
   import { fade } from "svelte/transition";
   import type { Alert } from "../model/alert";
   import { detections$, alerts$, saveAlerts } from "../AlertsManager.svelte";
@@ -40,27 +39,27 @@
   let editing_alert: Alert | undefined = undefined;
 </script>
 
-<div id="content">
+<div id="main">
   {#key editing}
-    <div in:fade>
-      {#if !editing}
-        <h2>{$detections$.length} {$detections$.length == 1 ? "file has" : "files have"} triggered the alerts</h2>
+    {#if !editing}
+      <h2>{$detections$.length} {$detections$.length == 1 ? "file has" : "files have"} triggered the alerts</h2>
+      <div in:fade id="content">
         <DirectoryContent childs={$detections$} />
-      {:else}
-        <h2>Editing current set of alerts</h2>
-        <div id="editor">
-          <div>
-            <AlertTable {alerts}
-              on:select={ev => editing_alert = ev.detail}
-              on:remove={ev => removeAlert(ev.detail)}
-            />
-          </div>
-          <div>
-            <AlertEditor alert={editing_alert} on:produce={ev => appendAlert(ev.detail)} />
-          </div>
+      </div>
+    {:else}
+      <h2>Editing current set of alerts</h2>
+      <div id="editor">
+        <div id="content">
+          <AlertTable {alerts}
+            on:select={ev => editing_alert = ev.detail}
+            on:remove={ev => removeAlert(ev.detail)}
+          />
         </div>
-      {/if}
-    </div>
+        <div>
+          <AlertEditor alert={editing_alert} on:produce={ev => appendAlert(ev.detail)} />
+        </div>
+      </div>
+    {/if}
   {/key}
 
   <footer>
@@ -76,14 +75,21 @@
     text-align: center;
   }
 
-  #content {
+  #main {
     display: flex;
     align-content: center;
     flex-direction: column;
     justify-content: space-between;
+    height: 100%;
+  }
+
+  #content {
+    height: 100%;
+    overflow-y: auto;
   }
 
   footer {
+    margin-top: 1em;
     display: flex;
     justify-content: center;
     align-items: center;

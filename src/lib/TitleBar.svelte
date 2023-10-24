@@ -6,13 +6,14 @@
   import minimizeIcon from '@iconify/icons-mdi/window-minimize';
   import maximizeIcon from '@iconify/icons-mdi/window-maximize';
   import closeIcon from '@iconify/icons-mdi/window-close';
+  import { route$ } from './FSManager.svelte';
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <header on:mousedown={() => appWindow.startDragging()}>
-  <p>
+  <p id="title">
     {#await getName() then name}
-      {name}
+      {name} - {$route$?.path ?? ''}
     {/await}
   </p>
   <div id="actions">
@@ -40,11 +41,14 @@
     position: relative;
   }
 
-  p {
+  #title {
     margin: 0;
     padding: 5px;
     font-size: 16px;
     height: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   #actions {
