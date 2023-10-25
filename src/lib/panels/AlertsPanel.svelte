@@ -6,12 +6,9 @@
   import { fade } from "svelte/transition";
   import type { Alert } from "../model/alert";
   import { detections$, alerts$, saveAlerts } from "../AlertsManager.svelte";
+  import { onDestroy } from "svelte";
 
   let editing = false;
-
-  $: if (!editing) {
-    saveAlerts(alerts);
-  }
 
   let alerts: Alert[] = [];
 
@@ -37,6 +34,19 @@
   }
 
   let editing_alert: Alert | undefined = undefined;
+
+  function saveChanges() {
+    if (editing) {
+      saveAlerts(alerts);
+    }
+  }
+
+  function toggleEditing() {
+    saveChanges();
+    editing = !editing;
+  }
+
+  onDestroy(saveChanges);
 </script>
 
 <div id="main">
@@ -63,7 +73,7 @@
   {/key}
 
   <footer>
-    <Button on:click={_ => editing = !editing}>{!editing ? "Edit Active Alerts" : "Finish Editing"}</Button>
+    <Button on:click={toggleEditing}>{!editing ? "Edit Active Alerts" : "Finish Editing"}</Button>
   </footer>
 </div>
 

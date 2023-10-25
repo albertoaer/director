@@ -2,7 +2,7 @@ use std::{collections::HashMap, sync::{Arc, RwLock}};
 
 use tauri::{Window, AppHandle, Manager};
 
-use crate::{fsop, ds::Subscriber, alerts};
+use crate::{fsop, ds::Subscriber, alerts, persistency::{Persist, PersistencyFile}};
 
 #[derive(Clone)]
 pub struct RouteNotifier {
@@ -37,17 +37,30 @@ impl Subscriber<fsop::FSEvent> for RouteNotifier {
 
 #[derive(Clone)]
 pub struct AlertNotifier {
+  persistency_file: Option<PersistencyFile>,
   app_handle: Arc<RwLock<Option<AppHandle>>>,
   alerts: Arc<RwLock<Vec<alerts::Alert>>>,
 }
 
 impl AlertNotifier {
-  pub fn new() -> Self {
-    Self { app_handle: Arc::new(RwLock::new(None)), alerts: Arc::new(RwLock::new(Vec::new())) }
+  pub fn new(persistency_file: Option<PersistencyFile>) -> Self {
+    Self {
+      app_handle: Arc::new(RwLock::new(None)),
+      alerts: Arc::new(RwLock::new(persistency_file.load().unwrap_or_default())),
+      persistency_file
+    }
   }
 
   pub fn set_alerts(&self, alerts: Vec<alerts::Alert>) {
+    self.persistency_file.save(&alerts);
+    self.app_handle.read().unwrap().as_ref().and_then(
+      |app_handle| app_handle.emit_all("load-alerts", &alerts).ok()
+    );
     *self.alerts.write().unwrap() = alerts;
+  }
+
+  pub fn alerts(&self) -> Vec<alerts::Alert> {
+    self.alerts.read().unwrap().clone()
   }
 
   pub fn set_handler(&self, app_handle: AppHandle) {
@@ -65,7 +78,7 @@ impl Subscriber<fsop::FSEvent> for AlertNotifier {
           'childs: for child in childs {
             for alert in &alerts {
               if alert.matches(child) {
-                app_handle.emit_all("alert", alerts::AlertEvent::new_trigger(&alert, &child)).unwrap();
+                app_handle.emit_all("alert-trigger", alerts::Detection::new(alert.clone(), child.clone())).unwrap();
                 continue 'childs;
               }
             }
@@ -87,7 +100,7 @@ impl AppState {
   pub fn new() -> Self {
     let fs_manager = fsop::FSManager::new();
     let route_notifier = RouteNotifier::new();
-    let alert_notifier = AlertNotifier::new();
+    let alert_notifier = AlertNotifier::new(Some(PersistencyFile::new("../alerts.json")));
     fs_manager.listenners().subscribe(route_notifier.clone());
     fs_manager.listenners().subscribe(alert_notifier.clone());
     AppState { fs_manager, route_notifier, alert_notifier }
@@ -103,5 +116,9 @@ impl AppState {
 
   pub fn alert_notifier(&self) -> &AlertNotifier {
     &self.alert_notifier
+  }
+
+  pub fn init(&self, app_handle: AppHandle) {
+    self.alert_notifier.set_handler(app_handle);
   }
 }

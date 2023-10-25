@@ -4,6 +4,7 @@
 use tauri::{SystemTray, SystemTrayEvent, Manager, SystemTrayMenu, CustomMenuItem};
 use window_shadows::set_shadow;
 
+mod persistency;
 mod handlers;
 mod alerts;
 mod state;
@@ -36,6 +37,7 @@ fn main() {
     .invoke_handler(tauri::generate_handler![
       handlers::request_directory,
       handlers::request_calculate_directory,
+      handlers::request_alerts,
       handlers::save_alerts
     ])
     .setup(|app| {
@@ -44,6 +46,7 @@ fn main() {
         let window = app.get_window("main").unwrap();
         set_shadow(&window, true).unwrap();
       }
+      app.state::<state::AppState>().init(app.app_handle().clone());
       Ok(())
     })
     .build(tauri::generate_context!())

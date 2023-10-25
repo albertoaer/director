@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
   import { writable, type Writable } from "svelte/store";
-  import type { Alert, AlertEvent } from "./model/alert";
+  import type { Alert, Detection } from "./model/alert";
   import { listen } from "@tauri-apps/api/event";
   import { invoke } from "@tauri-apps/api/tauri";
   import { message } from "@tauri-apps/api/dialog";
@@ -9,14 +9,11 @@
   export const alerts$: Writable<Alert[] | undefined> = writable();
   export const detections$: DetectionList = new DetectionList();
 
-  listen<AlertEvent>("alert", (event) => {
-    if (event.payload.load) {
-      alerts$.set(event.payload.load.alerts);
-    } else if (event.payload.trigger) {
-      const detection = event.payload.trigger;
-      detections$.push(detection);
-    }
-  });
+  invoke<Alert[]>("request_alerts").then(alerts$.set);
+
+  listen<Alert[]>("load-alerts", (event) => alerts$.set(event.payload));
+
+  listen<Detection>("alert-trigger", (event) => detections$.push(event.payload));
 
   export async function saveAlerts(alerts: Alert[]) {
     try {
