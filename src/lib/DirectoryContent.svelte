@@ -1,3 +1,13 @@
+<script lang="ts" context="module">
+  import { writable } from "svelte/store";
+
+  let sizeUnitsIdx = writable(0);
+
+  function updateSizeUnit() {
+    sizeUnitsIdx.update(idx => (idx + 1) % Units.length);
+  }
+</script>
+
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import DirRow from "./DirRow.svelte";
@@ -14,11 +24,6 @@
   const dispatch = createEventDispatcher<{ navigate: { route: string } }>();
 
   export let childs: FSChild[];
-
-  let sizeUnitsIdx = 0;
-  function updateSizeUnit() {
-    sizeUnitsIdx = (sizeUnitsIdx + 1) % Units.length;
-  }
 </script>
 
 <ContextMenu let:contextMenu>
@@ -35,7 +40,7 @@
   <Table>
     <svelte:fragment slot="headers">
       <TableHeader>Name</TableHeader>
-      <TableHeader on:click={updateSizeUnit} action>Size ({Units[sizeUnitsIdx].symbol})</TableHeader>
+      <TableHeader on:click={updateSizeUnit} action>Size ({Units[$sizeUnitsIdx].symbol})</TableHeader>
       <TableHeader>Modified</TableHeader>
       <TableHeader>Created</TableHeader>
     </svelte:fragment>
@@ -43,7 +48,7 @@
       <DirRow
         {contextMenu}
         {child}
-        mapSize={size => formatBytes(size, Units[sizeUnitsIdx])}
+        mapSize={size => formatBytes(size, Units[$sizeUnitsIdx])}
         on:navigate={event => dispatch("navigate", { route: event.detail.route })}
       />
     {/each}

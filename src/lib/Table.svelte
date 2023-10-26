@@ -1,20 +1,22 @@
-<script lang="ts">
+<script lang="ts" context="module">
+  import { writable } from "svelte/store";
+
   const maxFontSize = 1.8;
   const minFontSize = 0.6;
 
-  let fontSize = (maxFontSize + minFontSize) / 2;
+  let fontSize = writable((maxFontSize + minFontSize) / 2);
 
   function updateFontSize(value: number, allow: boolean) {
     if (value == 0 || !allow) return;
     const mov = value / -Math.abs(value);
-    fontSize = Math.min(Math.max(minFontSize, fontSize + (mov * 0.2)), maxFontSize);
+    fontSize.update(value => Math.min(Math.max(minFontSize, value + (mov * 0.2)), maxFontSize));
   }
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <table
   on:wheel={ev => updateFontSize(ev.deltaY, ev.ctrlKey)}
-  style="--font-size: {fontSize}em"
+  style="--font-size: {$fontSize}em"
 >
   <tr>
     <slot name="headers" />
