@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import Button from "./Button.svelte";
-  import { Units, type Unit } from "./model/units";
+  import { Units } from "./model/units";
   import { AlertItems, type AlertItem, type Alert } from "./model/alert";
 
   const dispatch = createEventDispatcher<{ produce: Alert }>();
@@ -11,13 +11,13 @@
   let name: string = '';
   let item: AlertItem = 'all';
   let minSize: number = 0;
-  let sizeUnit: Unit = Units[0];
+  let sizeUnitSymbol: string = Units[0].symbol;
 
   $: if (alert) {
     name = alert.name;
     item = alert.filter.item;
     minSize = alert.filter.minSize;
-    sizeUnit = alert.filter.sizeUnit;
+    sizeUnitSymbol = alert.filter.sizeUnit.symbol;
     alert = undefined;
   }
 
@@ -27,7 +27,7 @@
       filter: {
         item,
         minSize,
-        sizeUnit
+        sizeUnit: Units.find(x => x.symbol == sizeUnitSymbol)!
       }
     });
   }
@@ -40,12 +40,9 @@
   <label for="name">Size</label>
   <div class="row">
     <input class="row-main" type="number" name="size" id="size" bind:value={minSize} min="0">
-    <select name="unit" bind:value={sizeUnit}>
+    <select name="unit" bind:value={sizeUnitSymbol}>
       {#each Units as unit}
-        <option
-          value={unit}
-          selected={sizeUnit.symbol == unit.symbol}
-        >
+        <option value={unit.symbol}>
           {unit.symbol}
         </option>
       {/each}
