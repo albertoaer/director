@@ -1,4 +1,4 @@
-use std::{collections::HashMap, sync::{Arc, RwLock}, thread, fs, io};
+use std::{collections::HashMap, sync::{Arc, RwLock}, thread, fs, io, path::Path};
 
 use crate::ds;
 
@@ -33,11 +33,14 @@ impl FSManager {
     reader.publish(event);
   }
 
-  fn entries_to_fschilds(entries: fs::ReadDir, calculating: bool, sizes: &mut HashMap<String, u128>) -> Vec<FSChild> {
+  fn entries_to_fschilds(&self, entries: fs::ReadDir, calculating: Option<bool>, sizes: &mut HashMap<String, u128>) -> Vec<FSChild> {
     let mut readed: Vec<FSChild> = vec![];
     for entry in entries {
       if let Ok(entry) = entry {
         let mut child = FSChild::new(&entry);
+
+        let calculating = calculating.unwrap_or_else(|| self.orders.read().unwrap().iter().find(|x| x.is_child(&child.path)).is_some());
+        
         if let FSSizeStatus::NotCalculated = child.size {
           if let Some(size) = sizes.get(&child.path) {
             child.size = FSSizeStatus::Calculated(*size);
@@ -57,9 +60,8 @@ impl FSManager {
     let entries = fs::read_dir(&path)?;
     thread::spawn(move || {
       let mut sizes = manager.sizes.write().unwrap();
-      let calculating = manager.orders.read().unwrap().iter().find(|x| x.is_child(&path)).is_some();
-      let childs = Self::entries_to_fschilds(entries, calculating, &mut sizes);
-      manager.publish(&FSEvent::Entry { path, childs });
+      let childs = manager.entries_to_fschilds(entries, None, &mut sizes);
+      manager.publish(&FSEvent::Entries { path, childs });
     });
     Ok(())
   }
@@ -67,9 +69,9 @@ impl FSManager {
   fn calculate_entry_rec(&self, path: &String) -> io::Result<u128> {
     let mut childs = {
       let mut sizes = self.sizes.write().unwrap();
-      Self::entries_to_fschilds(fs::read_dir(&path)?, true, &mut sizes)
+      self.entries_to_fschilds(fs::read_dir(&path)?, Some(true), &mut sizes)
     };
-    self.publish(&FSEvent::Entry { path: path.clone(), childs: childs.clone() });
+    self.publish(&FSEvent::Entries { path: path.clone(), childs: childs.clone() });
     let mut result = 0;
     for child in &mut childs {
       result += match child.size {
@@ -82,7 +84,7 @@ impl FSManager {
         _ => 0
       }
     }
-    self.publish(&FSEvent::Entry { path: path.clone(), childs });
+    self.publish(&FSEvent::Entries { path: path.clone(), childs });
     let mut sizes = self.sizes.write().unwrap();
     sizes.insert(path.clone(), result);
     Ok(result)
@@ -103,7 +105,20 @@ impl FSManager {
       if let Some(_) = manager.sizes.read().unwrap().get(&path) {
         return
       }
+
+      // Algorithm
       manager.calculate_entry_rec(&path).unwrap();
+
+      // Update parent directory
+      if let Some(parent) = Path::new(&path).parent() {
+        if let Ok(entries) = fs::read_dir(&parent) {
+          let mut sizes = manager.sizes.write().unwrap();
+          let childs = manager.entries_to_fschilds(entries, None, &mut sizes);
+          manager.publish(&FSEvent::Entries { path: parent.to_str().unwrap().to_string(), childs });
+        }
+      }
+
+      // Update order
       let mut orders = manager.orders.write().unwrap();
       for _order in orders.iter_mut() {
         let order_path = _order.path.clone().to_str().unwrap().to_string();

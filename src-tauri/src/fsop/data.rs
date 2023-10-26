@@ -90,13 +90,12 @@ impl FSChild {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(untagged)]
 pub enum FSEvent {
-  #[serde(rename = "entry")]
-  Entry {
+  Entries {
     path: String,
     childs: Vec<FSChild>
   },
-  #[serde(rename = "order")]
   Order {
     order: FSOrder
   }

@@ -18,10 +18,3 @@ export interface Detection {
   alert: Alert,
   child: FSChild
 }
-
-export interface AlertEvent {
-  load?: {
-    alerts: Alert[]
-  },
-  trigger?: Detection
-}

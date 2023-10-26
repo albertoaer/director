@@ -29,9 +29,7 @@ export interface FSChild {
   type: 'file' | 'directory' | 'link' | 'other'
 }
 
-export interface FSEvent {
-  entry?: {
-    path: string,
-    childs: FSChild[]
-  }
+export interface FSEntriesUpdate {
+  path: string,
+  childs: FSChild[]
 }

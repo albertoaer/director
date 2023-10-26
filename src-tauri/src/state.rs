@@ -22,12 +22,12 @@ impl RouteNotifier {
 impl Subscriber<fsop::FSEvent> for RouteNotifier {
   fn notify(&self, event: &fsop::FSEvent) {
     match event {
-      fsop::FSEvent::Entry { path, .. } => {
+      fsop::FSEvent::Entries { path, .. } => {
         for (window, _path) in self.window_watcher.read().unwrap().iter() {
           if _path != path {
             continue;
           }
-          window.emit("updated-entry", event).unwrap();
+          window.emit("updated-entries", event).unwrap();
         }
       },
       _ => ()
@@ -74,7 +74,7 @@ impl Subscriber<fsop::FSEvent> for AlertNotifier {
     if let Some(app_handle) = app_handle { 
       let alerts = self.alerts.read().unwrap().clone();
       match event {
-        fsop::FSEvent::Entry { childs, .. } => {
+        fsop::FSEvent::Entries { childs, .. } => {
           'childs: for child in childs {
             for alert in &alerts {
               if alert.matches(child) {

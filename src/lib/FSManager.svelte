@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
   import { writable, type Writable } from "svelte/store";
-  import type { FSChild, FSEvent, Route } from "./model/fs";
+  import type { FSChild, FSEntriesUpdate, Route } from "./model/fs";
   import { getMatches } from "@tauri-apps/api/cli";
   import { invoke } from "@tauri-apps/api/tauri";
   import { message } from "@tauri-apps/api/dialog";
@@ -10,9 +10,9 @@
   export const route$: Writable<Route | undefined> = writable();
   export const childs$: Writable<FSChild[] | undefined> = writable();
 
-  listen<FSEvent>("updated-entry", (event) => {
-    if (event.payload.entry?.path == route?.path && route?.path) {
-      childs$.set(event.payload.entry?.childs);
+  listen<FSEntriesUpdate>("updated-entries", (event) => {
+    if (event.payload.path == route?.path && route?.path) {
+      childs$.set(event.payload.childs);
     }
   });
 
