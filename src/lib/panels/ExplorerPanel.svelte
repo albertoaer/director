@@ -1,7 +1,6 @@
 <script lang="ts">
   import DirectoryBreadcrumbs from "../DirectoryBreadcrumbs.svelte";
   import DirectoryContent from "../DirectoryContent.svelte";
-  import DirectoryHistory from "../DirectoryHistory.svelte";
   import { route$, childs$, navigate } from "../FSManager.svelte";
 
   function handleNavigate(ev: CustomEvent<{ route: string}>) {
@@ -13,7 +12,6 @@
   }
 </script>
 
-<DirectoryHistory />
 {#if $route$}
   <DirectoryBreadcrumbs route={$route$} on:navigate={handleNavigate} on:calculate={handleCalculate} />
   <div id="content">

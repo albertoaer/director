@@ -8,9 +8,12 @@
   import alertsIcon from '@iconify/icons-mdi/alert-circle-outline';
   import cleanIcon from '@iconify/icons-mdi/recycle';
   import settingsIcon from '@iconify/icons-mdi/settings-outline';
+  import DirectoryHistory from "./lib/DirectoryHistory.svelte";
 </script>
 
 <Theme />
+<DirectoryHistory />
+
 <div id="app">
   <TitleBar />
   <Nav items={[
