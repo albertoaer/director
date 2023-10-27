@@ -1,22 +1,25 @@
+<script lang="ts" context="module">
+  export interface NavigationItem {
+    name: string,
+    component: ComponentType,
+    icon: string | IconifyIcon
+  }
+</script>
+
 <script lang="ts">
   import { createEventDispatcher, type ComponentType } from "svelte";
   import Icon, { type IconifyIcon } from "@iconify/svelte";
   import { tooltip } from "./Tooltip.svelte";
 
-  interface NavigationItem {
-    name: string,
-    component: ComponentType,
-    icon: string | IconifyIcon
-  }
-
   const dispatch = createEventDispatcher<{ selected: NavigationItem }>();
 
   export let items: NavigationItem[];
+  export let selected: string;
 </script>
 
 <ul id="bar">
   {#each items as item (item.name)}
-    <li class="item" use:tooltip={{ content: item.name, placement: 'right' }}>
+    <li class="item" class:selected={selected == item.name} use:tooltip={{ content: item.name, placement: 'right' }}>
       <button on:click={_ => dispatch('selected', item)}>
         <Icon icon={item.icon} color="var(--font-color)" />
       </button>
@@ -45,7 +48,7 @@
     transition: 200ms background-color ease;
   }
   
-  li:hover button {
+  li:hover button, li.selected button {
     background-color: var(--nav-bar-hover-color);
     transition: 200ms background-color ease-out;
   }

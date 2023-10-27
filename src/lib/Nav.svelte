@@ -1,14 +1,20 @@
 <script lang="ts">
   import type { ComponentProps, ComponentType } from "svelte";
-  import NavBar from "./NavBar.svelte";
+  import NavBar, { type NavigationItem } from "./NavBar.svelte";
 
   export let items: ComponentProps<NavBar>['items'];
   
   let component: ComponentType | undefined = items[0]?.component;
+  let selected = items[0]?.name;
+
+  function handleSelection(ev: CustomEvent<NavigationItem>) {
+    component = ev.detail.component;
+    selected = ev.detail.name;
+  }
 </script>
 
 <div id="main">
-  <NavBar {items} on:selected={ev => component = ev.detail.component}></NavBar>
+  <NavBar {items} {selected} on:selected={handleSelection}></NavBar>
   <div id="panel">
     <svelte:component this={component} />
   </div>
