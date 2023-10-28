@@ -119,13 +119,14 @@ pub enum FSOrderStatus {
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct FSOrder {
-  pub(super) path: PathBuf,
+  pub(super) path: String,
   pub(super) status: FSOrderStatus
 }
 
 impl FSOrder {
   pub fn new(path: impl Into<PathBuf>) -> Self {
-    FSOrder { path: path.into(), status: FSOrderStatus::Unknown }
+    let path: PathBuf = path.into();
+    FSOrder { path: path.to_str().unwrap().to_string(), status: FSOrderStatus::Unknown }
   }
 
   pub fn is_child(&self, other: impl Into<PathBuf>) -> bool {

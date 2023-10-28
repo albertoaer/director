@@ -13,10 +13,15 @@
   }
 </script>
 
+<script>
+  export let auto = false;
+</script>
+
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <table
   on:wheel={ev => updateFontSize(ev.deltaY, ev.ctrlKey)}
   style="--font-size: {$fontSize}em"
+  class:auto
 >
   <tr>
     <slot name="headers" />
@@ -32,6 +37,10 @@
     border-collapse: collapse;
     table-layout: fixed;
     font-size: var(--font-size);
+  }
+
+  table.auto {
+    table-layout: auto;
   }
 
   tr {

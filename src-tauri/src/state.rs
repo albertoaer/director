@@ -83,8 +83,10 @@ impl Subscriber<fsop::FSEvent> for AlertNotifier {
               }
             }
           }
-        },
-        _ => ()
+        }
+        fsop::FSEvent::Order { order, .. } => {
+          app_handle.emit_all("order", order).unwrap();
+        }
       }
     }
   }

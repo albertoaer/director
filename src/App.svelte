@@ -1,14 +1,15 @@
 <script lang="ts">
   import TitleBar from "./lib/TitleBar.svelte";
   import Nav from "./lib/Nav.svelte";
-  import { ExplorerPanel, VoidPanel, AlertsPanel } from "./lib/panels";
+  import { ExplorerPanel, VoidPanel, AlertsPanel, OrdersPanel } from "./lib/panels";
   import Theme from "./lib/Theme.svelte";
-
-  import exploreIcon from '@iconify/icons-mdi/folder-outline';
-  import alertsIcon from '@iconify/icons-mdi/alert-circle-outline';
-  import cleanIcon from '@iconify/icons-mdi/recycle';
-  import settingsIcon from '@iconify/icons-mdi/settings-outline';
   import DirectoryHistory from "./lib/DirectoryHistory.svelte";
+
+  import ExploreIcon from '@iconify/icons-mdi/folder-outline';
+  import AlertsIcon from '@iconify/icons-mdi/alert-circle-outline';
+  import CleanIcon from '@iconify/icons-mdi/recycle';
+  import SettingsIcon from '@iconify/icons-mdi/settings-outline';
+  import OrderIcon from "@iconify/icons-mdi/state-machine";
 </script>
 
 <Theme />
@@ -20,22 +21,22 @@
     {
       name: 'explore',
       component: ExplorerPanel,
-      icon: exploreIcon
+      icon: ExploreIcon
     },
     {
       name: 'alerts',
       component: AlertsPanel,
-      icon: alertsIcon
+      icon: AlertsIcon
     },
     {
-      name: 'clean',
-      component: VoidPanel,
-      icon: cleanIcon,
+      name: 'orders',
+      component: OrdersPanel,
+      icon: OrderIcon
     },
     {
       name: 'settings',
       component: VoidPanel,
-      icon: settingsIcon
+      icon: SettingsIcon
     }
   ]} />
 </div>

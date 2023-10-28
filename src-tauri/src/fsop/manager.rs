@@ -94,8 +94,9 @@ impl FSManager {
       }
     }
     let manager = self.clone();
-    let path = order.path.clone().to_str().unwrap().to_string();
+    let path = order.path.clone();
     order.set_status(FSOrderStatus::Running);
+    self.publish(&FSEvent::Order { order: order.clone() });
     orders.push(order);
     thread::spawn(move || {
       if let Some(_) = manager.sizes.read().unwrap().get(&path) {
@@ -117,9 +118,10 @@ impl FSManager {
       // Update order
       let mut orders = manager.orders.write().unwrap();
       for _order in orders.iter_mut() {
-        let order_path = _order.path.clone().to_str().unwrap().to_string();
+        let order_path = _order.path.clone();
         if order_path == path {
-          _order.set_status(FSOrderStatus::Finished)
+          _order.set_status(FSOrderStatus::Finished);
+          manager.publish(&FSEvent::Order { order: _order.clone() });
         }
       }
     });
