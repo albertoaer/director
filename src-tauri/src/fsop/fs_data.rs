@@ -36,6 +36,15 @@ pub enum FSSizeStatus {
   Known(u128)
 }
 
+impl FSSizeStatus {
+  pub fn raw(&self) -> Option<u128> {
+    match self {
+      Self::Calculated(size) | Self::Known(size) => Some(*size),
+      _ => None
+    }
+  }
+}
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct FSChild {
   pub(super) name: String,

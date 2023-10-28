@@ -1,4 +1,4 @@
-use crate::{state, fsop::*, alerts};
+use crate::{state, fsop::*};
 
 #[tauri::command]
 pub fn request_directory(
@@ -37,14 +37,14 @@ pub fn request_calculate_directory(
 #[tauri::command]
 pub fn request_alerts(
   state: tauri::State<state::AppState>,
-) -> Vec<alerts::Alert> {
+) -> Vec<Alert> {
   state.alert_notifier().alerts()
 }
 
 #[tauri::command]
 pub fn save_alerts(
   state: tauri::State<state::AppState>,
-  alerts: Vec<alerts::Alert>
+  alerts: Vec<Alert>
 ) {
   state.alert_notifier().set_alerts(alerts);
 }

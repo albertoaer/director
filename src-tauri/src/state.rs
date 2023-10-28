@@ -2,7 +2,7 @@ use std::{collections::HashMap, sync::{Arc, RwLock}};
 
 use tauri::{Window, AppHandle, Manager};
 
-use crate::{fsop, ds::Subscriber, alerts, persistency::{Persist, PersistencyFile}};
+use crate::{fsop, ds::Subscriber, persistency::{Persist, PersistencyFile}};
 
 #[derive(Clone)]
 pub struct RouteNotifier {
@@ -39,7 +39,7 @@ impl Subscriber<fsop::FSEvent> for RouteNotifier {
 pub struct AlertNotifier {
   persistency_file: Option<PersistencyFile>,
   app_handle: Arc<RwLock<Option<AppHandle>>>,
-  alerts: Arc<RwLock<Vec<alerts::Alert>>>,
+  alerts: Arc<RwLock<Vec<fsop::Alert>>>,
 }
 
 impl AlertNotifier {
@@ -51,7 +51,7 @@ impl AlertNotifier {
     }
   }
 
-  pub fn set_alerts(&self, alerts: Vec<alerts::Alert>) {
+  pub fn set_alerts(&self, alerts: Vec<fsop::Alert>) {
     self.persistency_file.save(&alerts);
     self.app_handle.read().unwrap().as_ref().and_then(
       |app_handle| app_handle.emit_all("load-alerts", &alerts).ok()
@@ -59,7 +59,7 @@ impl AlertNotifier {
     *self.alerts.write().unwrap() = alerts;
   }
 
-  pub fn alerts(&self) -> Vec<alerts::Alert> {
+  pub fn alerts(&self) -> Vec<fsop::Alert> {
     self.alerts.read().unwrap().clone()
   }
 
@@ -78,7 +78,7 @@ impl Subscriber<fsop::FSEvent> for AlertNotifier {
           'childs: for child in childs {
             for alert in &alerts {
               if alert.matches(child) {
-                app_handle.emit_all("alert-trigger", alerts::Detection::new(alert.clone(), child.clone())).unwrap();
+                app_handle.emit_all("alert-trigger", fsop::Detection::new(alert.clone(), child.clone())).unwrap();
                 continue 'childs;
               }
             }
@@ -100,7 +100,7 @@ impl AppState {
   pub fn new() -> Self {
     let fs_manager = fsop::FSManager::new();
     let route_notifier = RouteNotifier::new();
-    let alert_notifier = AlertNotifier::new(Some(PersistencyFile::new("../alerts.json")));
+    let alert_notifier = AlertNotifier::new(None);
     fs_manager.listenners().subscribe(route_notifier.clone());
     fs_manager.listenners().subscribe(alert_notifier.clone());
     AppState { fs_manager, route_notifier, alert_notifier }

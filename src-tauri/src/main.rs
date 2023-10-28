@@ -6,7 +6,6 @@ use window_shadows::set_shadow;
 
 mod persistency;
 mod handlers;
-mod alerts;
 mod state;
 mod fsop;
 mod ds;

@@ -6,7 +6,7 @@ pub struct Unit {
   factor: u32
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, PartialEq, Eq, Hash)]
 pub enum AlertItem {
   #[serde(rename = "folders")]
   Folders,
@@ -30,10 +30,10 @@ impl AlertItem {
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct AlertFilter {
   #[serde(rename = "minSize")]
-  min_size: u128,
+  pub(super) min_size: u128,
   #[serde(rename = "sizeUnit")]
-  unit: Unit,
-  item: AlertItem
+  pub(super) unit: Unit,
+  pub(super) item: AlertItem
 }
 
 impl AlertFilter {
@@ -44,8 +44,8 @@ impl AlertFilter {
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Alert {
-  name: String,
-  filter: AlertFilter
+  pub(super) name: String,
+  pub(super) filter: AlertFilter
 }
 
 impl Alert {
@@ -69,25 +69,5 @@ pub struct Detection {
 impl Detection {
   pub fn new(alert: Alert, child: FSChild) -> Self {
     Self { alert, child }
-  }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub enum AlertEvent {
-  #[serde(rename = "load")]
-  Load {
-    alerts: Vec<Alert>
-  },
-  #[serde(rename = "trigger")]
-  Trigger(Detection)
-}
-
-impl AlertEvent {
-  pub fn new_load(alerts: Vec<Alert>) -> Self {
-    Self::Load { alerts }
-  }
-
-  pub fn new_trigger(alert: &Alert, child: &FSChild) -> Self {
-    Self::Trigger(Detection::new(alert.clone(), child.clone()))
   }
 }
