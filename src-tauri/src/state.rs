@@ -38,14 +38,14 @@ impl Subscriber<fsop::FSEvent> for RouteNotifier {
 #[derive(Clone)]
 pub struct AlertNotifier {
   persistency_file: Option<PersistencyFile>,
-  app_handle: Arc<RwLock<Option<AppHandle>>>,
+  app_handle: AppHandle,
   alerts: Arc<RwLock<Vec<fsop::Alert>>>,
 }
 
 impl AlertNotifier {
-  pub fn new(persistency_file: Option<PersistencyFile>) -> Self {
+  pub fn new(persistency_file: Option<PersistencyFile>, app_handle: AppHandle) -> Self {
     Self {
-      app_handle: Arc::new(RwLock::new(None)),
+      app_handle,
       alerts: Arc::new(RwLock::new(persistency_file.load().unwrap_or_default())),
       persistency_file
     }
@@ -53,74 +53,35 @@ impl AlertNotifier {
 
   pub fn set_alerts(&self, alerts: Vec<fsop::Alert>) {
     self.persistency_file.save(&alerts);
-    self.app_handle.read().unwrap().as_ref().and_then(
-      |app_handle| app_handle.emit_all("load-alerts", &alerts).ok()
-    );
+    self.app_handle.emit_all("load-alerts", &alerts).ok();
     *self.alerts.write().unwrap() = alerts;
   }
 
   pub fn alerts(&self) -> Vec<fsop::Alert> {
     self.alerts.read().unwrap().clone()
   }
-
-  pub fn set_handler(&self, app_handle: AppHandle) {
-    *self.app_handle.write().unwrap() = Some(app_handle);
-  }
 }
 
 impl Subscriber<fsop::FSEvent> for AlertNotifier {
   fn notify(&self, event: &fsop::FSEvent) {
-    let app_handle = self.app_handle.read().unwrap().clone();
-    if let Some(app_handle) = app_handle { 
-      let alerts = self.alerts.read().unwrap().clone();
-      match event {
-        fsop::FSEvent::Entries { childs, .. } => {
-          'childs: for child in childs {
-            for alert in &alerts {
-              if alert.matches(child) {
-                app_handle.emit_all("alert-trigger", fsop::Detection::new(alert.clone(), child.clone())).unwrap();
-                continue 'childs;
+    let alerts = self.alerts.read().unwrap().clone();
+    match event {
+      fsop::FSEvent::Entries { childs, .. } => {
+        'childs: for child in childs {
+          for alert in &alerts {
+            if alert.matches(child) {
+              match self.app_handle.emit_all("alert-trigger", fsop::Detection::new(alert.clone(), child.clone())) {
+                Ok(_) => (),
+                Err(err) => println!("{}", err),
               }
+              continue 'childs;
             }
           }
         }
-        fsop::FSEvent::Order { order, .. } => {
-          app_handle.emit_all("order", order).unwrap();
-        }
+      }
+      fsop::FSEvent::Order { order, .. } => {
+        self.app_handle.emit_all("order", order).unwrap();
       }
     }
-  }
-}
-
-pub struct AppState {
-  fs_manager: fsop::FSManager,
-  route_notifier: RouteNotifier,
-  alert_notifier: AlertNotifier
-}
-
-impl AppState {
-  pub fn new() -> Self {
-    let fs_manager = fsop::FSManager::new();
-    let route_notifier = RouteNotifier::new();
-    let alert_notifier = AlertNotifier::new(None);
-    fs_manager.listenners().subscribe(route_notifier.clone());
-    fs_manager.listenners().subscribe(alert_notifier.clone());
-    AppState { fs_manager, route_notifier, alert_notifier }
-  }
-
-  pub fn fs_manager(&self) -> &fsop::FSManager {
-    &self.fs_manager
-  }
-
-  pub fn route_notifier(&self) -> &RouteNotifier {
-    &self.route_notifier
-  }
-
-  pub fn alert_notifier(&self) -> &AlertNotifier {
-    &self.alert_notifier
-  }
-
-  pub fn init(&self, app_handle: AppHandle) {
-    self.alert_notifier.set_handler(app_handle);
   }
 }

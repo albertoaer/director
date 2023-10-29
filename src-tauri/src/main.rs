@@ -32,7 +32,6 @@ fn main() {
       }
       _ => {}
     })
-    .manage(state::AppState::new())
     .invoke_handler(tauri::generate_handler![
       handlers::request_directory,
       handlers::request_calculate_directory,
@@ -45,7 +44,17 @@ fn main() {
         let window = app.get_window("main").unwrap();
         set_shadow(&window, true).unwrap();
       }
-      app.state::<state::AppState>().init(app.app_handle().clone());
+      let alert_notifier = state::AlertNotifier::new(None, app.app_handle());
+      app.manage(alert_notifier.clone());
+
+      let route_notifier = state::RouteNotifier::new();
+      app.manage(route_notifier.clone());
+
+      let fs_manager = fsop::FSManager::new();
+      fs_manager.listenners().subscribe(alert_notifier);
+      fs_manager.listenners().subscribe(route_notifier);
+
+      app.manage(fs_manager);
       Ok(())
     })
     .build(tauri::generate_context!())
