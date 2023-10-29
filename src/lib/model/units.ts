@@ -3,7 +3,7 @@ export interface Unit {
   factor: number
 }
 
-export const Units: Unit[] = [
+export const Units = [
   {
     symbol: 'B',
     factor: 0
@@ -24,7 +24,11 @@ export const Units: Unit[] = [
     symbol: 'TB',
     factor: 12
   }
-];
+] as const;
+
+export function convertToBytes(value: number, factor: number) {
+  return value * Math.pow(10, factor);
+}
 
 export function converFromBytes(value: number, factor: number) {
   return value * 1 / Math.pow(10, factor);

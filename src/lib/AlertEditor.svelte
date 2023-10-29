@@ -1,7 +1,8 @@
 <script lang="ts">
+  import { confirm } from "@tauri-apps/api/dialog";
   import { createEventDispatcher } from "svelte";
   import Button from "./Button.svelte";
-  import { Units } from "./model/units";
+  import { Units, convertToBytes } from "./model/units";
   import { AlertItems, type AlertItem, type Alert } from "./model/alert";
 
   const dispatch = createEventDispatcher<{ produce: Alert }>();
@@ -21,15 +22,25 @@
     alert = undefined;
   }
 
-  function apply() {
-    dispatch("produce", {
-      name,
-      filter: {
-        item,
-        minSize,
-        sizeUnit: Units.find(x => x.symbol == sizeUnitSymbol)!
-      }
-    });
+  async function apply() {
+    let sizeUnit = Units.find(x => x.symbol == sizeUnitSymbol)!;
+    let mbReference = Units.find(x => x.symbol == 'MB')!;
+    if (
+      convertToBytes(minSize, sizeUnit.factor) >= Math.pow(10, mbReference.factor) ||
+      await confirm(
+        "Is not recomendable to use a filter with a min size of less than 1MB, Proceed?",
+        "Recommendation"
+      )
+    ) {
+      dispatch("produce", {
+        name,
+        filter: {
+          item,
+          minSize,
+          sizeUnit
+        }
+      });
+    }
   }
 </script>
 
