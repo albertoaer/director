@@ -1,4 +1,4 @@
-use std::{collections::HashMap, sync::{Arc, RwLock}};
+use std::{collections::{HashMap, HashSet}, sync::{Arc, RwLock}};
 
 use tauri::{Window, AppHandle, Manager};
 
@@ -40,6 +40,7 @@ pub struct AlertNotifier {
   persistency_file: Option<PersistencyFile>,
   app_handle: AppHandle,
   alerts: Arc<RwLock<Vec<fsop::Alert>>>,
+  detections: Arc<RwLock<(HashSet<String>, Vec<fsop::Detection>)>>
 }
 
 impl AlertNotifier {
@@ -47,7 +48,8 @@ impl AlertNotifier {
     Self {
       app_handle,
       alerts: Arc::new(RwLock::new(persistency_file.load().unwrap_or_default())),
-      persistency_file
+      persistency_file,
+      detections: Arc::new(RwLock::new((HashSet::new(), Vec::new())))
     }
   }
 
@@ -60,6 +62,11 @@ impl AlertNotifier {
   pub fn alerts(&self) -> Vec<fsop::Alert> {
     self.alerts.read().unwrap().clone()
   }
+
+  pub fn get_detections(&self, begin: usize, count: usize) -> Vec<fsop::Detection> {
+    self.detections.read().unwrap().1.iter()
+      .take(begin + count).skip(begin).map(|x| x.clone()).collect()
+  }
 }
 
 impl Subscriber<fsop::FSEvent> for AlertNotifier {
@@ -70,9 +77,11 @@ impl Subscriber<fsop::FSEvent> for AlertNotifier {
         'childs: for child in childs {
           for alert in &alerts {
             if alert.matches(child) {
-              match self.app_handle.emit_all("alert-trigger", fsop::Detection::new(alert.clone(), child.clone())) {
-                Ok(_) => (),
-                Err(err) => println!("{}", err),
+              let mut detections = self.detections.write().unwrap();
+              if detections.0.insert(child.path().clone()) {
+                detections.1.push(
+                  fsop::Detection::new(alert.clone(), child.clone())
+                );
               }
               continue 'childs;
             }

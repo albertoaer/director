@@ -36,7 +36,8 @@ fn main() {
       handlers::request_directory,
       handlers::request_calculate_directory,
       handlers::request_alerts,
-      handlers::save_alerts
+      handlers::save_alerts,
+      handlers::get_detections
     ])
     .setup(|app| {
       #[cfg(any(windows, target_os = "macos"))]

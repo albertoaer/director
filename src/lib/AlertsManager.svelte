@@ -13,8 +13,6 @@
 
   listen<Alert[]>("load-alerts", (event) => alerts$.set(event.payload));
 
-  listen<Detection>("alert-trigger", (event) => detections$.push(event.payload));
-
   export async function saveAlerts(alerts: Alert[]) {
     try {
       await invoke('save_alerts', { alerts });
@@ -23,4 +21,16 @@
       message(err.toString(), { type: 'error' })
     }
   }
+
+  const intervalTime = 250;
+
+  setInterval(async () => {
+    const result = await invoke<Detection[]>("get_detections", {
+      begin: detections$.count,
+      count: 300
+    });
+    for (const detection of result) {
+      detections$.push(detection);
+    }
+  }, intervalTime);
 </script>

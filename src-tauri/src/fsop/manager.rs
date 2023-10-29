@@ -73,9 +73,12 @@ impl FSManager {
       result += match child.size {
         FSSizeStatus::Calculated(size) | FSSizeStatus::Known(size) => size,
         _ if matches!(child.child_type, FSChildType::Directory) => {
-          let size = self.calculate_entry_rec(&child.path)?;
-          child.size = FSSizeStatus::Calculated(size);
-          size
+          if let Ok(size) = self.calculate_entry_rec(&child.path) {
+            child.size = FSSizeStatus::Calculated(size);
+            size
+          } else {
+            0
+          }
         }
         _ => 0
       }

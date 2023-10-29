@@ -48,3 +48,12 @@ pub fn save_alerts(
 ) {
   state.set_alerts(alerts);
 }
+
+#[tauri::command]
+pub fn get_detections(
+  state: tauri::State<state::AlertNotifier>,
+  begin: u32,
+  count: u32
+) -> Vec<Detection> {
+  state.get_detections(begin as usize, count as usize)
+}
