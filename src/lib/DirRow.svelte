@@ -65,7 +65,7 @@
   }
 
   td {
-    padding: .5em 0;
+    padding: .5em 0.5em;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

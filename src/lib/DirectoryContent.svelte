@@ -37,20 +37,18 @@
       </ContextMenuItem>
     {/if}
   </svelte:fragment>
-  <Table>
+  <Table items={childs} let:item={child}>
     <svelte:fragment slot="headers">
       <TableHeader>Name</TableHeader>
       <TableHeader on:click={updateSizeUnit} action>Size ({Units[$sizeUnitsIdx].symbol})</TableHeader>
       <TableHeader>Modified</TableHeader>
       <TableHeader>Created</TableHeader>
     </svelte:fragment>
-    {#each childs as child (child.path)}
-      <DirRow
-        {contextMenu}
-        {child}
-        mapSize={size => formatBytes(size, Units[$sizeUnitsIdx])}
-        on:navigate={event => dispatch("navigate", { route: event.detail.route })}
-      />
-    {/each}
+    <DirRow
+      {contextMenu}
+      {child}
+      mapSize={size => formatBytes(size, Units[$sizeUnitsIdx])}
+      on:navigate={event => dispatch("navigate", { route: event.detail.route })}
+    />
   </Table>
 </ContextMenu>

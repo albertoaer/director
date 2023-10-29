@@ -2,20 +2,17 @@
   import Table from "../Table.svelte";
   import TableHeader from "../TableHeader.svelte";
   import { orders$ } from "../OrderManager.svelte";
-  import Icon from "@iconify/svelte";
 </script>
 
-<Table auto>
+<Table auto items={[...$orders$.values()]} let:item={order}>
   <svelte:fragment slot="headers">
     <TableHeader>Order</TableHeader>
     <TableHeader>Status</TableHeader>
   </svelte:fragment>
-  {#each $orders$ as order}
-    <tr>
-      <td>{order[1].path}</td>
-      <td>{order[1].status}</td>
-    </tr>
-  {/each}
+  <tr>
+    <td>{order.path}</td>
+    <td>{order.status}</td>
+  </tr>
 </Table>
 
 <style>

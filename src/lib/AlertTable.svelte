@@ -12,29 +12,27 @@
 </script>
 
 {#if alerts.length}
-  <Table>
+  <Table items={alerts} let:item={alert}>
     <svelte:fragment slot="headers">
       <TableHeader>Name</TableHeader>
       <TableHeader>Size</TableHeader>
       <TableHeader>Items</TableHeader>
       <TableHeader></TableHeader>
     </svelte:fragment>
-    {#each alerts as alert}
-      <tr on:click={_ => dispatch("select", alert)} class="row">
-        <td>
-          {alert.name}
-        </td>
-        <td>
-          {alert.filter.minSize} {alert.filter.sizeUnit.symbol}
-        </td>
-        <td>
-          {alert.filter.item}
-        </td>
-        <td class="remove" on:click={_ => dispatch("remove", alert)}>
-          <Icon icon={IconRemove} />
-        </td>
-      </tr>
-    {/each}
+    <tr on:click={_ => dispatch("select", alert)} class="row">
+      <td>
+        {alert.name}
+      </td>
+      <td>
+        {alert.filter.minSize} {alert.filter.sizeUnit.symbol}
+      </td>
+      <td>
+        {alert.filter.item}
+      </td>
+      <td class="remove" on:click={_ => dispatch("remove", alert)}>
+        <Icon icon={IconRemove} />
+      </td>
+    </tr>
   </Table>
 {:else}
   <h3>No alerts</h3>

@@ -13,23 +13,43 @@
   }
 </script>
 
-<script>
+<script lang="ts" generics="T">
+  export let items: T[];
+  export let minElements = 100;
+
   export let auto = false;
+  let range = minElements;
+
+  function handleScroll(ev: UIEvent) {
+    const target = ev.target as HTMLElement;
+    if (target.scrollHeight - target.scrollTop - target.clientHeight < 5) {
+      range += 100;
+    }
+  }
 </script>
 
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-<table
-  on:wheel={ev => updateFontSize(ev.deltaY, ev.ctrlKey)}
-  style="--font-size: {$fontSize}em"
-  class:auto
->
-  <tr>
-    <slot name="headers" />
-  </tr>
-  <slot />
-</table>
+<div on:scroll={handleScroll}>
+  <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+  <table
+    on:wheel={ev => updateFontSize(ev.deltaY, ev.ctrlKey)}
+    style="--font-size: {$fontSize}em"
+    class:auto
+  >
+    <tr>
+      <slot name="headers" />
+    </tr>
+    {#each items.slice(0, range) as item}
+      <slot {item} />
+    {/each}
+  </table>
+</div>
 
 <style>
+  div {
+    overflow-y: auto;
+    height: 100%;
+  }
+
   table {
     width: 100%;
     text-align: left;

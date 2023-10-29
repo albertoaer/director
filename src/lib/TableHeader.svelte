@@ -6,7 +6,7 @@
 
 <style>
   th {
-    padding: 0.3em 0;
+    padding: 0.3em 0.5em;
     user-select: none;
   }
   
