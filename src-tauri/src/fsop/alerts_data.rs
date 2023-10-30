@@ -54,7 +54,7 @@ impl Alert {
       return false
     }
     match child.size() {
-      FSSizeStatus::Calculated(size) | FSSizeStatus::Known(size) if *size > self.filter.size() => true,
+      FSSizeStatus::Calculated(size) | FSSizeStatus::Known(size) if *size >= self.filter.size() => true,
       _ => false
     }
   }
@@ -62,8 +62,8 @@ impl Alert {
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Detection {
-  alert: Alert,
-  child: FSChild
+  pub(super) alert: Alert,
+  pub(super) child: FSChild
 }
 
 impl Detection {
