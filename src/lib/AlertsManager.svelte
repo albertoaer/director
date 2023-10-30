@@ -15,7 +15,8 @@
 
   export async function saveAlerts(alerts: Alert[]) {
     try {
-      await invoke('save_alerts', { alerts });
+      const refresh = await invoke<boolean>('save_alerts', { alerts });
+      if (refresh) detections$.clear();
       alerts$.set(alerts);
     } catch (err: any) {
       message(err.toString(), { type: 'error' })
@@ -29,8 +30,6 @@
       begin: detections$.count,
       count: 300
     });
-    for (const detection of result) {
-      detections$.push(detection);
-    }
+    detections$.push(...result);
   }, intervalTime);
 </script>

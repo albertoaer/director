@@ -1,4 +1,4 @@
-use std::{collections::{HashMap, HashSet}, sync::{Arc, RwLock}};
+use std::{collections::HashMap, sync::{Arc, RwLock}};
 
 use tauri::{Window, AppHandle, Manager};
 
@@ -40,7 +40,7 @@ pub struct AlertNotifier {
   persistency_file: Option<PersistencyFile>,
   app_handle: AppHandle,
   alerts: Arc<RwLock<Vec<fsop::Alert>>>,
-  detections: Arc<RwLock<(HashSet<String>, Vec<fsop::Detection>)>>
+  cache: Arc<RwLock<fsop::FilterCache>>
 }
 
 impl AlertNotifier {
@@ -49,14 +49,16 @@ impl AlertNotifier {
       app_handle,
       alerts: Arc::new(RwLock::new(persistency_file.load().unwrap_or_default())),
       persistency_file,
-      detections: Arc::new(RwLock::new((HashSet::new(), Vec::new())))
+      cache: Arc::new(RwLock::new(fsop::FilterCache::new()))
     }
   }
 
-  pub fn set_alerts(&self, alerts: Vec<fsop::Alert>) {
+  pub fn set_alerts(&self, alerts: Vec<fsop::Alert>) -> bool {
     self.persistency_file.save(&alerts);
     self.app_handle.emit_all("load-alerts", &alerts).ok();
+    let refresh = self.cache.write().unwrap().set_filter(fsop::Filter::new(alerts.clone()));
     *self.alerts.write().unwrap() = alerts;
+    refresh
   }
 
   pub fn alerts(&self) -> Vec<fsop::Alert> {
@@ -64,28 +66,17 @@ impl AlertNotifier {
   }
 
   pub fn get_detections(&self, begin: usize, count: usize) -> Vec<fsop::Detection> {
-    self.detections.read().unwrap().1.iter()
-      .take(begin + count).skip(begin).map(|x| x.clone()).collect()
+    self.cache.read().unwrap().get_range(begin, count)
   }
 }
 
 impl Subscriber<fsop::FSEvent> for AlertNotifier {
   fn notify(&self, event: &fsop::FSEvent) {
-    let alerts = self.alerts.read().unwrap().clone();
     match event {
       fsop::FSEvent::Entries { childs, .. } => {
-        'childs: for child in childs {
-          for alert in &alerts {
-            if alert.matches(child) {
-              let mut detections = self.detections.write().unwrap();
-              if detections.0.insert(child.path().clone()) {
-                detections.1.push(
-                  fsop::Detection::new(alert.clone(), child.clone())
-                );
-              }
-              continue 'childs;
-            }
-          }
+        let mut writer = self.cache.write().unwrap();
+        for child in childs {
+          writer.include(child.clone());
         }
       }
       fsop::FSEvent::Order { order, .. } => {

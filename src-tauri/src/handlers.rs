@@ -45,8 +45,8 @@ pub fn request_alerts(
 pub fn save_alerts(
   state: tauri::State<state::AlertNotifier>,
   alerts: Vec<Alert>
-) {
-  state.set_alerts(alerts);
+) -> bool {
+  state.set_alerts(alerts)
 }
 
 #[tauri::command]
