@@ -6,6 +6,7 @@
   import Icon from "@iconify/svelte";
   import OpenFolderIcon from "@iconify/icons-mdi/folder-open-outline";
   import CalculateFolderIcon from "@iconify/icons-mdi/scale-unbalanced";
+  import ChartIcon from "@iconify/icons-mdi/chart-pie";
   import { tooltip } from "./Tooltip.svelte";
 
   const dispatch = createEventDispatcher<{
@@ -71,6 +72,12 @@
     </form>
   {:else}
     <div id="buttons" in:fade={{ duration: 200 }}>
+      <button
+        on:click|stopPropagation={calculateFolder}
+        use:tooltip={{ content: 'toggle chart', singleton: 'dir-bar' }}
+      >
+        <Icon icon={ChartIcon} inline />
+      </button>
       <button
         on:click|stopPropagation={calculateFolder}
         use:tooltip={{ content: 'calculate folder', singleton: 'dir-bar' }}

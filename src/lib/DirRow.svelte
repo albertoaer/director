@@ -9,7 +9,8 @@
   import OtherIcon from "@iconify/icons-mdi/question-mark";
   import UndefinedIcon from "@iconify/icons-mdi/error";
   import { ctxPayload, type ContextMenuEvent } from "./ContextMenu.svelte";
-    import tippy from "tippy.js";
+  import tippy from "tippy.js";
+  import Dots from "./Dots.svelte";
 
   const dispatch = createEventDispatcher<{ navigate: {route: string} }>();
 
@@ -39,8 +40,9 @@
 
 <tr use:ctxPayload={{ id: child.path }} use:tippy={{ content: child.path }} on:click={click} on:contextmenu={contextMenu}>
   <td class="name" class:nav={canNavigate(child.type)} ><Icon icon={getIcon(child.type)} />{child.name}</td>
-  <td class:dots={child.size.status === 'Calculating'}>
+  <td>
     {child.size.value !== undefined ? mapSize(child.size.value) : child.size.status}
+    <Dots cond={child.size.status === 'Calculating'}/>
   </td>
   {#if child.modified}
     <td>{new Date(child.modified).toLocaleString()}</td>
@@ -79,17 +81,5 @@
 
   td.nav {
     font-style: italic;
-  }
-
-  @keyframes dots {
-    0%   { content: '.  ';   }
-    50%  { content: '.. ';  }
-    100% { content: '...'; }
-  }
-
-  td.dots::after {
-    content: '';
-    animation: dots 1s infinite linear;
-    animation-delay: 0;
   }
 </style>

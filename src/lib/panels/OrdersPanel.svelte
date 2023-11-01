@@ -2,16 +2,17 @@
   import Table from "../Table.svelte";
   import TableHeader from "../TableHeader.svelte";
   import { orders$ } from "../OrderManager.svelte";
+  import Dots from "../Dots.svelte";
 </script>
 
-<Table auto items={[...$orders$.values()]} let:item={order}>
+<Table items={[...$orders$.values()]} let:item={order}>
   <svelte:fragment slot="headers">
-    <TableHeader>Order</TableHeader>
+    <TableHeader width='70%'>Order</TableHeader>
     <TableHeader>Status</TableHeader>
   </svelte:fragment>
   <tr>
     <td>{order.path}</td>
-    <td>{order.status}</td>
+    <td>{order.status}<Dots cond={order.status === 'Running'}/></td>
   </tr>
 </Table>
 

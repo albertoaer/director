@@ -39,10 +39,10 @@
   </svelte:fragment>
   <Table items={childs} let:item={child}>
     <svelte:fragment slot="headers">
-      <TableHeader>Name</TableHeader>
-      <TableHeader on:click={updateSizeUnit} action>Size ({Units[$sizeUnitsIdx].symbol})</TableHeader>
-      <TableHeader>Modified</TableHeader>
-      <TableHeader>Created</TableHeader>
+      <TableHeader width='35%'>Name</TableHeader>
+      <TableHeader width='25%' on:click={updateSizeUnit} action>Size ({Units[$sizeUnitsIdx].symbol})</TableHeader>
+      <TableHeader width='20%' >Modified</TableHeader>
+      <TableHeader width='20%' >Created</TableHeader>
     </svelte:fragment>
     <DirRow
       {contextMenu}

@@ -32,6 +32,6 @@
   #panel {
     padding: 0.7em 0.7em 0.7em calc(0.7em + 1vw);
     width: 100%;
-    height: calc(100% - 4em);
+    height: calc(100% - 3.5em);
   }
 </style>
