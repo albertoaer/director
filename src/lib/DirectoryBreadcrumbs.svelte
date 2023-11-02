@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, tick } from "svelte";
   import { routeToString, type Route } from "./model/fs";
   import { fade } from "svelte/transition";
   import { open } from "@tauri-apps/api/dialog";
@@ -33,7 +33,10 @@
 
   function setupInput(component: HTMLInputElement) {
     editValue = value;
-    component.focus();
+    (async () => {
+      await tick();
+      component.select();
+    })();
   }
 
   function submit(route: string) {
@@ -110,6 +113,7 @@
   #buttons {
     display: flex;
     flex-wrap: wrap;
+    user-select: none;
   }
 
   vr {
