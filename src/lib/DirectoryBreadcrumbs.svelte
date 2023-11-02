@@ -5,14 +5,9 @@
   import { open } from "@tauri-apps/api/dialog";
   import Icon from "@iconify/svelte";
   import OpenFolderIcon from "@iconify/icons-mdi/folder-open-outline";
-  import CalculateFolderIcon from "@iconify/icons-mdi/scale-unbalanced";
-  import ChartIcon from "@iconify/icons-mdi/chart-pie";
-  import { tooltip } from "./Tooltip.svelte";
+  import ItemButton from "./ItemButton.svelte";
 
-  const dispatch = createEventDispatcher<{
-    navigate: { route: string },
-    calculate: { route: string }
-  }>();
+  const dispatch = createEventDispatcher<{navigate: { route: string }}>();
 
   export let route: Route;
 
@@ -57,10 +52,6 @@
     if (result && typeof result === 'string')
       dispatch('navigate', { route: result });
   }
-
-  function calculateFolder() {
-    dispatch('calculate', { route: route.path });
-  }
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -72,32 +63,23 @@
     </form>
   {:else}
     <div id="buttons" in:fade={{ duration: 200 }}>
-      <button
-        on:click|stopPropagation={calculateFolder}
-        use:tooltip={{ content: 'toggle chart', singleton: 'dir-bar' }}
-      >
-        <Icon icon={ChartIcon} inline />
-      </button>
-      <button
-        on:click|stopPropagation={calculateFolder}
-        use:tooltip={{ content: 'calculate folder', singleton: 'dir-bar' }}
-      >
-        <Icon icon={CalculateFolderIcon} inline />
-      </button>
-      <vr />
-      <button
-        on:click|stopPropagation={openFolder}
-        use:tooltip={{ content: 'open folder', singleton: 'dir-bar' }}
+      {#if $$slots.default}
+        <slot />
+        <vr />
+      {/if}
+      <ItemButton
+        on:click={openFolder}
+        tooltip={{ content: 'open folder', singleton: 'dir-bar' }}
       >
         <Icon icon={OpenFolderIcon} inline />
-      </button>
+      </ItemButton>
       {#each route.items as item}
-        <button
-          on:click|stopPropagation={event => handleItemClick(event, item.path)}
-          use:tooltip={{ content: item.path, singleton: 'dir-bar' }}
+        <ItemButton
+          on:click={event => handleItemClick(event, item.path)}
+          tooltip={{ content: item.path, singleton: 'dir-bar' }}
         >
           {item.name}
-        </button>
+        </ItemButton>
       {/each}
     </div>
   {/if}
@@ -122,23 +104,6 @@
     display: inline-flex;
     width: 100%;
     height: 100%;
-    font-size: inherit;
-  }
-
-  button {
-    margin: 0;
-    padding: 0.25em 0.5em;
-    border: none;
-    background-color: inherit;
-    color: inherit;
-    height: 100%;
-    font-size: inherit;
-  }
-  
-  button:hover {
-    cursor: pointer;
-    background-color: var(--item-active-color);
-    transition: 200ms all ease;
     font-size: inherit;
   }
 
