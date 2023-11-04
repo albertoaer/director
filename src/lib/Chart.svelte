@@ -12,7 +12,7 @@
   export let options: ChartOptions | undefined = undefined;
   export let plugins: Plugin[] | undefined = undefined;
 
-  let chart: Chart | undefined;
+  export let chart: Chart | undefined;
 
   function createChart(item: ChartItem) {
     Chart.defaults.font.size = 18;
@@ -36,3 +36,10 @@
 {#key type}
   <canvas use:createChart></canvas>
 {/key}
+
+<style>
+  canvas {
+    height: 100%;
+    width: 100%;
+  }
+</style>
