@@ -7,11 +7,12 @@ use crate::{fsop, ds::Subscriber, persistency::{Persist, PersistencyFile}};
 #[derive(Clone)]
 pub struct RouteNotifier {
   window_watcher: Arc<RwLock<HashMap<Window, String>>>,
+  app_handle: AppHandle,
 }
 
 impl RouteNotifier {
-  pub fn new() -> Self {
-    Self { window_watcher: Arc::new(RwLock::new(HashMap::new())) }
+  pub fn new(app_handle: AppHandle) -> Self {
+    Self { window_watcher: Arc::new(RwLock::new(HashMap::new())), app_handle }
   }
 
   pub fn set(&self, window: Window, path: String) {
@@ -30,7 +31,9 @@ impl Subscriber<fsop::FSEvent> for RouteNotifier {
           window.emit("updated-entries", event).unwrap();
         }
       },
-      _ => ()
+      fsop::FSEvent::Order { order, .. } => {
+        self.app_handle.emit_all("order", order).unwrap();
+      }
     }
   }
 }
@@ -79,9 +82,7 @@ impl Subscriber<fsop::FSEvent> for AlertNotifier {
           writer.include(child.clone());
         }
       }
-      fsop::FSEvent::Order { order, .. } => {
-        self.app_handle.emit_all("order", order).unwrap();
-      }
+      _ => ()
     }
   }
 }

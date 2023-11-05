@@ -21,7 +21,11 @@ impl FSManager {
   }
 
   pub fn listenners(&self) -> std::sync::RwLockWriteGuard<'_, ds::Publisher<FSEvent>> {
-    return self.listenners.write().unwrap();
+    self.listenners.write().unwrap()
+  }
+
+  pub fn orders(&self) -> Vec<FSOrder> {
+    self.orders.read().unwrap().clone()
   }
 
   fn publish(&self, event: &FSEvent) {

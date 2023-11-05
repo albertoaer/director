@@ -57,3 +57,10 @@ pub fn get_detections(
 ) -> Vec<Detection> {
   state.get_detections(begin as usize, count as usize)
 }
+
+#[tauri::command]
+pub fn refresh_orders(
+  state: tauri::State<fsop::FSManager>
+) -> Vec<fsop::FSOrder> {
+  state.orders()
+}

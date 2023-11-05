@@ -37,7 +37,8 @@ fn main() {
       handlers::request_calculate_directory,
       handlers::request_alerts,
       handlers::save_alerts,
-      handlers::get_detections
+      handlers::get_detections,
+      handlers::refresh_orders
     ])
     .setup(|app| {
       #[cfg(any(windows, target_os = "macos"))]
@@ -48,7 +49,7 @@ fn main() {
       let alert_notifier = state::AlertNotifier::new(None, app.app_handle());
       app.manage(alert_notifier.clone());
 
-      let route_notifier = state::RouteNotifier::new();
+      let route_notifier = state::RouteNotifier::new(app.app_handle());
       app.manage(route_notifier.clone());
 
       let fs_manager = fsop::FSManager::new();
