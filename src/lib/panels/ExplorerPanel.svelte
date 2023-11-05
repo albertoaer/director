@@ -6,6 +6,7 @@
   import ItemButton from "../ItemButton.svelte";
   import CalculateFolderIcon from "@iconify/icons-mdi/scale-unbalanced";
   import ChartIcon from "@iconify/icons-mdi/chart-pie";
+  import ListIcon from "@iconify/icons-mdi/list-box-outline";
   import DirectoryChart from "../DirectoryChart.svelte";
 
   function handleNavigate(ev: CustomEvent<{ route: string}>) {
@@ -15,11 +16,10 @@
   let route = $route$;
   $: route = $route$;
 
-  const components = [DirectoryContent, DirectoryChart];
-  let activeComponent = 0;
+  let chart = false;
 
   function toggleChart() {
-    activeComponent = ++activeComponent % components.length;
+    chart = !chart;
   }
 
   function calculateFolder() {
@@ -31,21 +31,21 @@
 {#if $route$}
   <DirectoryBreadcrumbs route={$route$} on:navigate={handleNavigate}>
     <ItemButton
-      on:click={toggleChart}
-      tooltip={{ content: 'toggle chart', singleton: 'dir-bar' }}
-    >
-      <Icon icon={ChartIcon} inline />
-    </ItemButton>
-    <ItemButton
       on:click={calculateFolder}
       tooltip={{ content: 'calculate folder', singleton: 'dir-bar' }}
     >
       <Icon icon={CalculateFolderIcon} inline />
     </ItemButton>
+    <ItemButton
+      on:click={toggleChart}
+      tooltip={{ content: 'toggle chart', singleton: 'dir-bar' }}
+    >
+      <Icon icon={chart ? ListIcon : ChartIcon} inline />
+    </ItemButton>
   </DirectoryBreadcrumbs>
   <div id="content">
     {#if $childs$}
-      <svelte:component this={components[activeComponent]} childs={$childs$} on:navigate={handleNavigate} />
+      <svelte:component this={chart ? DirectoryChart : DirectoryContent} childs={$childs$} on:navigate={handleNavigate} />
     {/if}
   </div>
 {/if}
