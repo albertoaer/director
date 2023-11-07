@@ -5,7 +5,7 @@
   import DirectoryContent from "../DirectoryContent.svelte";
   import { fade } from "svelte/transition";
   import type { Alert } from "../model/alert";
-  import { detections$, alerts$, saveAlerts } from "../AlertsManager.svelte";
+  import { detections$, alerts$, saveAlerts } from "../AlertManager.svelte";
   import { onDestroy } from "svelte";
 
   let editing = false;

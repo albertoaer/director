@@ -3,6 +3,7 @@
 
 use tauri::{SystemTray, SystemTrayEvent, Manager, SystemTrayMenu, CustomMenuItem};
 use window_shadows::set_shadow;
+use env_logger;
 
 mod persistency;
 mod handlers;
@@ -11,6 +12,8 @@ mod fsop;
 mod ds;
 
 fn main() {
+  env_logger::init();
+
   let menu = SystemTrayMenu::new().add_item(CustomMenuItem::new("exit", "Exit"));
 
   tauri::Builder::default()

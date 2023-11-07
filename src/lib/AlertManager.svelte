@@ -23,12 +23,13 @@
     }
   }
 
-  const intervalTime = 250;
+  const intervalTime = 2000;
+  const requestCount = 600;
 
   setInterval(async () => {
     const result = await invoke<Detection[]>("get_detections", {
       begin: detections$.count,
-      count: 300
+      count: requestCount
     });
     detections$.push(...result);
   }, intervalTime);

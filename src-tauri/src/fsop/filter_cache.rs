@@ -1,5 +1,7 @@
 use std::{collections::HashSet, mem::swap};
 
+use log::info;
+
 use super::{Alert, Detection, FSChild};
 
 #[derive(Clone)]
@@ -72,7 +74,7 @@ impl FilterCache {
     self.remain.extend_from_slice(&remain_a);
     self.remain.extend_from_slice(&remain_b);
 
-    println!("filtered: {} remain: {}", self.filtered.len(), self.remain.len());
+    info!("filtered: {} remain: {}", self.filtered.len(), self.remain.len());
 
     self.filter = filter;
     true
@@ -89,7 +91,7 @@ impl FilterCache {
   }
 
   pub fn get_range<B>(&self, begin: usize, count: usize) -> B where B: FromIterator<Detection> {
-    println!("requested, begin: {} count: {}, filtered: {}", begin, count, self.filtered.len());
+    info!("requested, begin: {} count: {}, filtered: {}", begin, count, self.filtered.len());
     self.filtered.iter().skip(begin).take(count).map(|x| x.clone()).collect()
   }
 }
