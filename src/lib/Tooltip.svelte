@@ -16,5 +16,10 @@
       singleton[1].setInstances(singleton[0]);
       singletons.set(options?.singleton, singleton);
     }
+    return {
+      destroy() {
+        instance.destroy();
+      }
+    }
   }
 </script>
