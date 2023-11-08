@@ -1,6 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use persistency::PersistencyFile;
 use tauri::{SystemTray, SystemTrayEvent, Manager, SystemTrayMenu, CustomMenuItem};
 use window_shadows::set_shadow;
 use env_logger;
@@ -49,7 +50,7 @@ fn main() {
         let window = app.get_window("main").unwrap();
         set_shadow(&window, true).unwrap();
       }
-      let alert_notifier = state::AlertNotifier::new(None, app.app_handle());
+      let alert_notifier = state::AlertNotifier::new(Some(PersistencyFile::new_config("alerts")), app.app_handle());
       app.manage(alert_notifier.clone());
 
       let route_notifier = state::RouteNotifier::new(app.app_handle());
