@@ -8,15 +8,15 @@
   import LinkIcon from "@iconify/icons-mdi/link";
   import OtherIcon from "@iconify/icons-mdi/question-mark";
   import UndefinedIcon from "@iconify/icons-mdi/error";
-  import { ctxPayload, type ContextMenuEvent } from "./ContextMenu.svelte";
   import tippy from "tippy.js";
   import Dots from "./Dots.svelte";
+  import type { ContextMenuEvent } from "./ContextMenu.svelte";
 
   const dispatch = createEventDispatcher<{ navigate: {route: string} }>();
 
   export let child: FSChild;
   export let mapSize: (size: number) => string = size => size.toString();
-  export let contextMenu: ContextMenuEvent | undefined = undefined;
+  export let contextMenu: ContextMenuEvent<FSChild> | undefined = undefined;
 
   function getIcon(type: typeof child.type) {
     switch (type) {
@@ -38,7 +38,7 @@
   }
 </script>
 
-<tr use:ctxPayload={{ id: child.path }} use:tippy={{ content: child.path }} on:click={click} on:contextmenu={contextMenu}>
+<tr use:tippy={{ content: child.path }} on:click={click} on:contextmenu={ev => contextMenu?.(child, ev.clientX, ev.clientY, ev)}>
   <td class="name" class:nav={canNavigate(child.type)} ><Icon icon={getIcon(child.type)} />{child.name}</td>
   <td>
     {child.size.value !== undefined ? mapSize(child.size.value) : child.size.status}

@@ -17,6 +17,7 @@
   import TableHeader from "./TableHeader.svelte";
   import ContextMenu from "./ContextMenu.svelte";
   import ContextMenuItem from "./ContextMenuItem.svelte";
+  import InfoIcon from '@iconify/icons-mdi/info-box';
   import NavigateIcon from '@iconify/icons-mdi/chevron-right';
   import CalculateIcon from '@iconify/icons-mdi/scale-unbalanced';
   import AddStartupIcon from '@iconify/icons-mdi/calendar-add';
@@ -29,19 +30,22 @@
   export let childs: FSChild[];
 </script>
 
-<ContextMenu let:contextMenu>
+<ContextMenu {childs} let:contextMenu>
   <svelte:fragment slot="menu" let:payload>
-    {#if payload}
-      <ContextMenuItem icon={NavigateIcon} on:click={_ => navigate(payload.id)}>
+    <ContextMenuItem icon={InfoIcon}>
+      { payload.type } : { payload.size.status } size
+    </ContextMenuItem>
+    {#if payload.type === 'directory'}
+      <ContextMenuItem icon={NavigateIcon} on:click={_ => navigate(payload.path)}>
         navigate
       </ContextMenuItem>
-      <ContextMenuItem icon={CalculateIcon} on:click={_ => navigate(payload.id, { calculate: true })}>
+      <ContextMenuItem icon={CalculateIcon} on:click={_ => navigate(payload.path, { calculate: true })}>
         navigate & calculate
       </ContextMenuItem>
-      <ContextMenuItem icon={AddStartupIcon} on:click={_ => add_startup(payload.id)}>
+      <ContextMenuItem icon={AddStartupIcon} on:click={_ => add_startup(payload.path)}>
         add to startup
       </ContextMenuItem>
-      <ContextMenuItem icon={RemoveStartupIcon} on:click={_ => remove_startup(payload.id)}>
+      <ContextMenuItem icon={RemoveStartupIcon} on:click={_ => remove_startup(payload.path)}>
         remove from startup
       </ContextMenuItem>
     {/if}
