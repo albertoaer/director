@@ -64,3 +64,26 @@ pub fn refresh_orders(
 ) -> Vec<fsop::FSOrder> {
   state.orders()
 }
+
+#[tauri::command]
+pub fn add_startup(
+  state: tauri::State<state::Startup>,
+  directory: String
+) {
+  state.add(directory)
+}
+
+#[tauri::command]
+pub fn remove_startup(
+  state: tauri::State<state::Startup>,
+  directory: String
+) {
+  state.remove(directory)
+}
+
+#[tauri::command]
+pub fn get_startup(
+  state: tauri::State<state::Startup>
+) -> Vec<String> {
+  state.get()
+}

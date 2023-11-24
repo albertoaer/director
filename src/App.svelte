@@ -1,15 +1,15 @@
 <script lang="ts">
   import TitleBar from "./lib/TitleBar.svelte";
   import Nav from "./lib/Nav.svelte";
-  import { ExplorerPanel, VoidPanel, AlertsPanel, OrdersPanel } from "./lib/panels";
+  import { ExplorerPanel, AlertsPanel, OrdersPanel } from "./lib/panels";
   import Theme from "./lib/Theme.svelte";
   import DirectoryHistory from "./lib/DirectoryHistory.svelte";
 
   import ExploreIcon from '@iconify/icons-mdi/folder-outline';
   import AlertsIcon from '@iconify/icons-mdi/alert-circle-outline';
-  import CleanIcon from '@iconify/icons-mdi/recycle';
   import SettingsIcon from '@iconify/icons-mdi/settings-outline';
   import OrderIcon from "@iconify/icons-mdi/state-machine";
+  import SettingsPanel from "./lib/panels/SettingsPanel.svelte";
 </script>
 
 <Theme />
@@ -35,7 +35,7 @@
     },
     {
       name: 'settings',
-      component: VoidPanel,
+      component: SettingsPanel,
       icon: SettingsIcon
     }
   ]} />

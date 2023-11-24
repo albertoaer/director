@@ -19,7 +19,10 @@
   import ContextMenuItem from "./ContextMenuItem.svelte";
   import NavigateIcon from '@iconify/icons-mdi/chevron-right';
   import CalculateIcon from '@iconify/icons-mdi/scale-unbalanced';
+  import AddStartupIcon from '@iconify/icons-mdi/calendar-add';
+  import RemoveStartupIcon from '@iconify/icons-mdi/calendar-minus';
   import { navigate } from "./FSManager.svelte";
+  import { add_startup, remove_startup } from "./SettingsManager.svelte";
 
   const dispatch = createEventDispatcher<{ navigate: { route: string } }>();
 
@@ -34,6 +37,12 @@
       </ContextMenuItem>
       <ContextMenuItem icon={CalculateIcon} on:click={_ => navigate(payload.id, { calculate: true })}>
         navigate & calculate
+      </ContextMenuItem>
+      <ContextMenuItem icon={AddStartupIcon} on:click={_ => add_startup(payload.id)}>
+        add to startup
+      </ContextMenuItem>
+      <ContextMenuItem icon={RemoveStartupIcon} on:click={_ => remove_startup(payload.id)}>
+        remove from startup
       </ContextMenuItem>
     {/if}
   </svelte:fragment>

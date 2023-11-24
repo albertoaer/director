@@ -42,7 +42,10 @@ fn main() {
       handlers::request_alerts,
       handlers::save_alerts,
       handlers::get_detections,
-      handlers::refresh_orders
+      handlers::refresh_orders,
+      handlers::add_startup,
+      handlers::remove_startup,
+      handlers::get_startup
     ])
     .setup(|app| {
       #[cfg(any(windows, target_os = "macos"))]
@@ -59,6 +62,11 @@ fn main() {
       let fs_manager = fsop::FSManager::new();
       fs_manager.listenners().subscribe(alert_notifier);
       fs_manager.listenners().subscribe(route_notifier);
+
+      let startup = state::Startup::new(
+        Some(PersistencyFile::new_config("startup")), fs_manager.clone(), app.app_handle()
+      );
+      app.manage(startup);
 
       app.manage(fs_manager);
       Ok(())

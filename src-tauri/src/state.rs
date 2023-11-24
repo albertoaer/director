@@ -1,4 +1,4 @@
-use std::{collections::HashMap, sync::{Arc, RwLock}};
+use std::{collections::{HashMap, HashSet}, sync::{Arc, RwLock}};
 
 use tauri::{Window, AppHandle, Manager};
 
@@ -84,5 +84,44 @@ impl Subscriber<fsop::FSEvent> for AlertNotifier {
       }
       _ => ()
     }
+  }
+}
+
+#[derive(Clone)]
+pub struct Startup {
+  persistency_file: Option<PersistencyFile>,
+  directories: Arc<RwLock<HashSet<String>>>,
+  fs_manager: fsop::FSManager,
+  app_handle: AppHandle
+}
+
+impl Startup {
+  pub fn new(persistency_file: Option<PersistencyFile>, fs_manager: fsop::FSManager, app_handle: AppHandle) -> Self {
+    Self {
+      directories: Arc::new(RwLock::new(persistency_file.load().unwrap_or_default())),
+      persistency_file,
+      fs_manager,
+      app_handle
+    }
+  }
+
+  pub fn add(&self, directory: String) {
+    let mut directories = self.directories.write().unwrap();
+    if directories.insert(directory) {
+      self.app_handle.emit_all("startup-update", directories.clone()).unwrap();
+      self.persistency_file.save(&directories.clone());
+    }
+  }
+
+  pub fn remove(&self, directory: String) {
+    let mut directories = self.directories.write().unwrap();
+    if directories.remove(&directory) {
+      self.app_handle.emit_all("startup-update", directories.clone()).unwrap();
+      self.persistency_file.save(&directories.clone());
+    }
+  }
+
+  pub fn get(&self) -> Vec<String> {
+    self.directories.read().unwrap().clone().into_iter().collect()
   }
 }
