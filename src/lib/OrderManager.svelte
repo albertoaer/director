@@ -14,10 +14,11 @@
   });
 
   // Always get the current set of orders when open the window
-  const ordersResponse = await invoke<Order[]>("refresh_orders");
-  orders$.update(orders => {
-    for (const order of ordersResponse)
-      orders.set(order.path, order)
-    return orders;
+  invoke<Order[]>("refresh_orders").then(ordersResponse => {
+    orders$.update(orders => {
+      for (const order of ordersResponse)
+        orders.set(order.path, order)
+      return orders;
+    });
   });
 </script>
