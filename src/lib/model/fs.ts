@@ -18,7 +18,7 @@ export interface FSChild {
   name: string,
   path: string,
   size: {
-    status: 'NotCalculated' | 'Calculating',
+    status: 'Not Calculated' | 'Calculating',
     value: undefined
   } | {
     status: 'Known' | 'Calculated',
