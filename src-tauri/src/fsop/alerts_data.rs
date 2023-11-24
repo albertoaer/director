@@ -12,8 +12,8 @@ pub enum AlertItem {
   Folders,
   #[serde(rename = "files")]
   Files,
-  #[serde(rename = "all")]
-  All
+  #[serde(rename = "any")]
+  Any
 }
 
 impl AlertItem {
@@ -21,7 +21,7 @@ impl AlertItem {
     match (self, child_type) {
       (Self::Folders, FSChildType::Directory) |
       (Self::Files, FSChildType::File) |
-      (Self::All, FSChildType::Directory | FSChildType::File) => true,
+      (Self::Any, FSChildType::Directory | FSChildType::File) => true,
       _ => false
     }
   }

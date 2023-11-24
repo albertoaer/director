@@ -1,7 +1,7 @@
 import type { FSChild } from "./fs";
 import type { Unit } from "./units";
 
-export const AlertItems = ['folders', 'files', 'all'] as const;
+export const AlertItems = ['folders', 'files', 'any'] as const;
 
 export type AlertItem = typeof AlertItems[number];
 

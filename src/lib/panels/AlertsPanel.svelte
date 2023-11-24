@@ -73,7 +73,7 @@
   {/key}
 
   <footer>
-    <Button on:click={toggleEditing}>{!editing ? "Edit Active Alerts" : "Finish Editing"}</Button>
+    <Button on:click={toggleEditing} effect>{!editing ? "Edit Active Alerts" : "Finish Editing"}</Button>
   </footer>
 </div>
 

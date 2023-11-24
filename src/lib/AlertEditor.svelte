@@ -9,13 +9,11 @@
 
   export let alert: Alert | undefined = undefined;
 
-  let name: string = '';
-  let item: AlertItem = 'all';
+  let item: AlertItem = 'any';
   let minSize: number = 0;
   let sizeUnitSymbol: string = Units[0].symbol;
 
   $: if (alert) {
-    name = alert.name;
     item = alert.filter.item;
     minSize = alert.filter.minSize;
     sizeUnitSymbol = alert.filter.sizeUnit.symbol;
@@ -33,7 +31,7 @@
       )
     ) {
       dispatch("produce", {
-        name,
+        name: item,
         filter: {
           item,
           minSize,
@@ -46,19 +44,6 @@
 
 <form on:submit|preventDefault>
   <h1>Configure alert</h1>
-  <label for="name">Name</label>
-  <input type="text" name="name" id="name" bind:value={name}>
-  <label for="name">Size</label>
-  <div class="row">
-    <input class="row-main" type="number" name="size" id="size" bind:value={minSize} min="0">
-    <select name="unit" bind:value={sizeUnitSymbol}>
-      {#each Units as unit}
-        <option value={unit.symbol}>
-          {unit.symbol}
-        </option>
-      {/each}
-    </select>
-  </div>
   <div class="row">
     {#each AlertItems as alertItem}
       <div>
@@ -71,6 +56,17 @@
         <label for="{alertItem}_input">{alertItem}</label>
       </div>
     {/each}
+  </div>
+  <label for="name">Size</label>
+  <div class="row">
+    <input class="row-main" type="number" name="size" id="size" bind:value={minSize} min="0">
+    <select name="unit" bind:value={sizeUnitSymbol}>
+      {#each Units as unit}
+        <option value={unit.symbol}>
+          {unit.symbol}
+        </option>
+      {/each}
+    </select>
   </div>
   <Button grow on:click={apply}>Apply</Button>
 </form>

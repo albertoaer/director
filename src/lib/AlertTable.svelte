@@ -14,20 +14,16 @@
 {#if alerts.length}
   <Table items={alerts} let:item={alert}>
     <svelte:fragment slot="headers">
-      <TableHeader>Name</TableHeader>
-      <TableHeader>Size</TableHeader>
       <TableHeader>Items</TableHeader>
+      <TableHeader>Size</TableHeader>
       <TableHeader></TableHeader>
     </svelte:fragment>
     <tr on:click={_ => dispatch("select", alert)} class="row">
       <td>
-        {alert.name}
+        {alert.filter.item}
       </td>
       <td>
         {alert.filter.minSize} {alert.filter.sizeUnit.symbol}
-      </td>
-      <td>
-        {alert.filter.item}
       </td>
       <td class="remove" on:click={_ => dispatch("remove", alert)}>
         <Icon icon={IconRemove} />
