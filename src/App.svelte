@@ -12,6 +12,8 @@
   import SettingsPanel from "./lib/panels/SettingsPanel.svelte";
 </script>
 
+<svelte:window on:contextmenu={ev => ev.preventDefault()}/>
+
 <Theme />
 <DirectoryHistory />
 
