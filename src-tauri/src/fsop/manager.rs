@@ -96,7 +96,7 @@ impl FSManager {
   pub fn process_order(&self, mut order: FSOrder) -> io::Result<()> {
     let mut orders = self.orders.write().unwrap();
     for _order in orders.iter() {
-      if *_order > order {
+      if *_order >= order {
         return Ok(()); // Already processing an order containing the requesting tree
       }
     }
