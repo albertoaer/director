@@ -45,7 +45,8 @@ fn main() {
       handlers::refresh_orders,
       handlers::add_startup,
       handlers::remove_startup,
-      handlers::get_startup
+      handlers::get_startup,
+      handlers::run_startup
     ])
     .setup(|app| {
       #[cfg(any(windows, target_os = "macos"))]

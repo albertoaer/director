@@ -87,3 +87,10 @@ pub fn get_startup(
 ) -> Vec<String> {
   state.get()
 }
+
+#[tauri::command]
+pub fn run_startup(
+  state: tauri::State<state::Startup>
+) -> Result<(), String> {
+  state.run_startup()
+}

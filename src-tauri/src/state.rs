@@ -2,7 +2,7 @@ use std::{collections::{HashMap, HashSet}, sync::{Arc, RwLock}};
 
 use tauri::{Window, AppHandle, Manager};
 
-use crate::{fsop, ds::Subscriber, persistency::{Persist, PersistencyFile}};
+use crate::{fsop::{self, FSOrder}, ds::Subscriber, persistency::{Persist, PersistencyFile}};
 
 #[derive(Clone)]
 pub struct RouteNotifier {
@@ -123,5 +123,12 @@ impl Startup {
 
   pub fn get(&self) -> Vec<String> {
     self.directories.read().unwrap().clone().into_iter().collect()
+  }
+
+  pub fn run_startup(&self) -> Result<(), String> {
+    for path in self.directories.read().unwrap().iter() {
+      self.fs_manager.process_order(FSOrder::new(path.clone())).map_err(|err| err.to_string())?;
+    }
+    Ok(())
   }
 }
