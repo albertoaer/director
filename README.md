@@ -4,7 +4,7 @@ Director is cross-platform desktop application to calculate directories size and
 
 ### Important
 
-Due to the cost of calculating the tree of directories, you either do it manually on the interested directory or you configure it to run on startup. Anyway the program is designed to run on `background` so **it must be closed from the system tray**
+Due to the cost of calculating the tree of directories, you either do it manually on the interested directory or you configure it to run on startup. Anyway the program is designed to run on `background` so **it must be closed from the system tray**, otherwise (closing the window) it will keep the background program running.
 
 ## Stack
 
