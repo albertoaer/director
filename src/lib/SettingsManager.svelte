@@ -8,17 +8,21 @@
 
   listen<string[]>("startup-update", event => startup$.set(event.payload));
 
-  export function add_startup(directory: string) {
+  export function addStartup(directory: string) {
     return invoke("add_startup", { directory });
   }
 
-  export function remove_startup(directory: string) {
+  export function removeStartup(directory: string) {
     return invoke("remove_startup", { directory });
   }
 
   invoke<string[]>('get_startup').then(startup$.set);
 
-  invoke('run_startup').catch(err => message(err, {
-    type: 'error'
-  }));
+  export function rerunStartup() {
+    invoke('run_startup').catch(err => message(err, {
+      type: 'error'
+    }));
+  }
+
+  rerunStartup();
 </script>
