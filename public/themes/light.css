@@ -1,0 +1,13 @@
+:root {
+  --window-bar-color: #808A8A;
+  --window-bar-hover-color: #5A6161;
+
+  --background-color: #ECFFFF;
+  --nav-bar-color: #CCDBDB;
+  --nav-bar-hover-color: #A6B3B3;
+
+  --item-color: #A6B3B3;
+  --item-active-color: #808A8A;
+
+  --font-color: #1c1c1c;
+}
