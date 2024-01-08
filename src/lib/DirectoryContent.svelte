@@ -10,6 +10,7 @@
 
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
+  import { writeText as writeClipboard } from "@tauri-apps/api/clipboard";
   import DirRow from "./DirRow.svelte";
   import type { FSChild } from "./model/fs";
   import { Units, formatBytes } from "./model/units";
@@ -18,6 +19,7 @@
   import ContextMenu from "./ContextMenu.svelte";
   import ContextMenuItem from "./ContextMenuItem.svelte";
   import InfoIcon from '@iconify/icons-mdi/info-box';
+  import ClipboardIcon from '@iconify/icons-mdi/clipboard';
   import NavigateIcon from '@iconify/icons-mdi/chevron-right';
   import CalculateIcon from '@iconify/icons-mdi/scale-unbalanced';
   import AddStartupIcon from '@iconify/icons-mdi/calendar-add';
@@ -34,6 +36,9 @@
   <svelte:fragment slot="menu" let:payload>
     <ContextMenuItem icon={InfoIcon}>
       { payload.type } : { payload.size.status } size
+    </ContextMenuItem>
+    <ContextMenuItem icon={ClipboardIcon} on:click={_ => writeClipboard(payload.path)}>
+      copy path to clipboard
     </ContextMenuItem>
     {#if payload.type === 'directory'}
       <ContextMenuItem icon={NavigateIcon} on:click={_ => navigate(payload.path)}>
