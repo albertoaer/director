@@ -2,7 +2,8 @@
   export interface NavigationItem {
     name: string,
     component: ComponentType,
-    icon: string | IconifyIcon
+    icon: string | IconifyIcon,
+    separator?: boolean
   }
 </script>
 
@@ -19,7 +20,11 @@
 
 <ul id="bar">
   {#each items as item (item.name)}
-    <li class="item" class:selected={selected == item.name} use:tooltip={{ content: item.name, placement: 'right' }}>
+    <li class="item"
+      class:separator={item.separator}
+      class:selected={selected == item.name}
+      use:tooltip={{ content: item.name, placement: 'right' }}
+    >
       <button on:click={_ => dispatch('selected', item)}>
         <Icon icon={item.icon} color="var(--font-color)" />
       </button>
@@ -51,5 +56,9 @@
   li:hover button, li.selected button {
     background-color: var(--nav-bar-hover-color);
     transition: 200ms background-color ease-out;
+  }
+
+  li.separator {
+    border-top: 2px solid var(--background-color);
   }
 </style>

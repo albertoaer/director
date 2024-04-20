@@ -1,13 +1,14 @@
 <script lang="ts">
   import TitleBar from "./lib/TitleBar.svelte";
   import Nav from "./lib/Nav.svelte";
-  import { ExplorerPanel, AlertsPanel, OrdersPanel } from "./lib/panels";
+  import { ExplorerPanel, AlertsPanel, OrdersPanel, ContactPanel } from "./lib/panels";
   import Theme from "./lib/Theme.svelte";
   import DirectoryHistory from "./lib/DirectoryHistory.svelte";
 
   import ExploreIcon from '@iconify/icons-mdi/folder-outline';
   import AlertsIcon from '@iconify/icons-mdi/alert-circle-outline';
   import SettingsIcon from '@iconify/icons-mdi/settings-outline';
+  import ContactIcon from '@iconify/icons-mdi/contact';
   import OrderIcon from "@iconify/icons-mdi/state-machine";
   import SettingsPanel from "./lib/panels/SettingsPanel.svelte";
 </script>
@@ -39,6 +40,12 @@
       name: 'settings',
       component: SettingsPanel,
       icon: SettingsIcon
+    },
+    {
+      name: 'contact',
+      component: ContactPanel,
+      icon: ContactIcon,
+      separator: true
     }
   ]} />
 </div>
