@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use persistency::PersistencyFile;
-use tauri::{SystemTray, SystemTrayEvent, Manager, SystemTrayMenu, CustomMenuItem};
+use tauri::{CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
 use window_shadows::set_shadow;
 use env_logger;
 
@@ -72,6 +72,13 @@ fn main() {
       app.manage(fs_manager);
       Ok(())
     })
+    .plugin(tauri_plugin_single_instance::init(|app, _, cwd| {
+      if let Some(window) = app.windows().values().next() {
+        window.emit("update-cwd", cwd).ok();
+        window.show().ok();
+        window.set_focus().ok();
+      }
+    }))
     .build(tauri::generate_context!())
     .expect("error while building tauri application")
     .run(|_app, event| match event {

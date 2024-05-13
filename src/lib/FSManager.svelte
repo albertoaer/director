@@ -10,7 +10,7 @@
   export const route$: Writable<Route | undefined> = writable();
   export const childs$: Writable<FSChild[] | undefined> = writable();
 
-  listen<FSEntriesUpdate>("updated-entries", (event) => {
+  listen<FSEntriesUpdate>("updated-entries", event => {
     if (event.payload.path == route?.path && route?.path) {
       childs$.set(event.payload.childs);
     }
@@ -38,4 +38,6 @@
     const value = matches.args['route'].value;
     await navigate(value ? value.toString() : "");
   });
+
+  listen<string>("update-cwd", event => navigate(event.payload));
 </script>
