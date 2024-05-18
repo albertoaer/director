@@ -54,14 +54,14 @@ $ npm run tauri build
 
 - Show notifications about the alerts and use a badge in the NavBar with the alert count
 
-## Captures
+## Snapshots
 
-![Explorer Capture](https://github.com/albertoaer/director/assets/24974091/f7f7c94f-bdbd-4651-9313-0009eba299c4)
-![Alerts Capture](https://github.com/albertoaer/director/assets/24974091/a2cf9a0c-8780-4deb-8ba0-66f1d34504dc)
-![Explorer Chart Capture](https://github.com/albertoaer/director/assets/24974091/17b44232-efc4-45b5-8e80-680825d849ae)
-![Startup Capture](https://github.com/albertoaer/director/assets/24974091/8166fb96-ae39-452c-b943-0dcbceb11494)
-![Edit Alerts Capture](https://github.com/albertoaer/director/assets/24974091/6f99f3ca-20ec-4808-9497-0e4303399355)
+![Explorer Snapshot](https://github.com/albertoaer/director/assets/24974091/f7f7c94f-bdbd-4651-9313-0009eba299c4)
+![Alerts Snapshot](https://github.com/albertoaer/director/assets/24974091/a2cf9a0c-8780-4deb-8ba0-66f1d34504dc)
+![Explorer Chart Snapshot](https://github.com/albertoaer/director/assets/24974091/17b44232-efc4-45b5-8e80-680825d849ae)
+![Startup Snapshot](https://github.com/albertoaer/director/assets/24974091/8166fb96-ae39-452c-b943-0dcbceb11494)
+![Edit Alerts Snapshot](https://github.com/albertoaer/director/assets/24974091/6f99f3ca-20ec-4808-9497-0e4303399355)
 
 ### Example with light theme
 
-![Light Theme Explorer Capture](https://github.com/albertoaer/director/assets/24974091/c612f5cf-1a4e-43d9-b696-f44077afd2b7)
+![Light Theme Explorer Snapshot](https://github.com/albertoaer/director/assets/24974091/c612f5cf-1a4e-43d9-b696-f44077afd2b7)
